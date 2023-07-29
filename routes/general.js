@@ -1,7 +1,6 @@
 import express from 'express'
 import login from '../controllers/login.js'
 import keepMeLogin from '../controllers/keepMeLogin.js'
-import sendResponse from '../controllers/sendResponse.js'
 
 const router = express.Router()
 
