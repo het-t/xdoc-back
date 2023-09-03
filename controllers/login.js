@@ -1,61 +1,38 @@
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
-import makeDbReq from '../db/index.js'
+import User from "../models/users.js";
+import con from "../helpers/modelsCreateConnection.js";
 
-import {models} from '../models/index.js'
+export default async function (req, res) {
+    
+    const client = con();
 
-const login = (req, res) => {
+    try {
 
-    const {password, email} = req.body
-    var userId = null
+        await client.connect();
 
-        models.users_main.login({username: email})
-        // if no user exist throw err
-        .then((userData)=>{
-            if (!userData[0].userPassword) {
-                throw "user not found"
-            }
-            else {
-                userId = userData[0].userId
-                return userData
-            }
-        })
-        //compare it with input password
-        .then((userData) => {
-            return bcrypt.compare(password, userData[0].userPassword)
-        })
-        //jwt
-        .then((verified)=>{
-            if (verified != true) {
-                throw "password not matching"
-            }
-        })
-        .then(() =>{
-            jwt.sign({userId}, 'secert', (err, token) => {
-                if (err) {
-                    throw err
-                }
-                else {                             
-                    res.cookie('_token', token, {
-                        signed: true
-                    })
-                    res.sendStatus(200)
-                }
-            })
-        })
-        .catch(err => {
-            res.sendStatus(500)
-            console.log(err)
-            makeDbReq('logs_add(?, ?, ?, ?, ?)', [
-                null,
-                1,                  //activityId
-                1,                 //tableid
-                null,                  //tablePkId
-                email + ' ' + err     //details
-            ])
-            // .catch((err) => console.log(err))
-        }) 
-    // }
+        let user = {};
+
+        user.db = client.db('xdoc');
+        user.collection = {
+            users: user.db.collection('users'),
+            userPasswords: user.db.collection('users_passwords')
+        };
+
+        const { username, password } = req.body;
+
+        const isPasswordValid = await User.prototype.authByPassword.call(user, username, password);
+        
+        if (isPasswordValid === true) {
+            res.status(200).send({success: 1});
+        }
+        else {
+            res.status(401).send({success: 0});
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.status(500).send({err});
+    }
+    finally {
+        client.close();
+    }
 }
-
-export default login

@@ -4,23 +4,6 @@ import path from 'path'
 import {fileURLToPath} from 'url'
 import router from './routes/index.js'
 
-//***************************************//
-//     to fetch the latest  ***********
-//************************************* */
-// import db from './models/index.js'
-
-// import SequelizeAuto from 'sequelize-auto'
-
-// console.log("db sequelize", db.sequelize.options)
-// const auto = new SequelizeAuto(
-//     db.sequelize.options
-// )
-// auto.run()
-
-
-//**************************************** */
-
-
 const app = express()
 
 const __filename = fileURLToPath(import.meta.url)
