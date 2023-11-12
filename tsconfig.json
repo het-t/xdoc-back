@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "paths": {
+            "@domain/*": ["domain/*"],
+            "@application/*": ["application/*"],
+            "@infrastructure/*": ["infrastructure/*"],
+            "@main/*": ["main/*"],
+            "@tests/*": ["../tests/*"]
+        },
+        "esModuleInterop": true,
+    }
+}

@@ -6,6 +6,7 @@ export default async function(operation, db) {
     console.log("command => ", command, "table => ", table);
     
     if (table === 'block') {
+
         if (command === 'set') {
             const {id, space_id} = args;
 
