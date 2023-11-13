@@ -8,7 +8,7 @@ export abstract class BaseMiddleware {
     async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
         try {
             return await this.execute(httpRequest);
-        } catch (error) {
+        } catch (error: any) {
             return serverError(error);
         }
     }

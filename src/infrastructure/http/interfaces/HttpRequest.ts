@@ -1,7 +1,7 @@
-export type HttpRequest<TBody = any, THeader = any, TParams = any> = {
+export type HttpRequest<TBody = any, TParams = any, THeader = any> = {
     body?: TBody;
-    headers?: THeader;
     params?: TParams;
+    headers?: THeader;
     userId?: string;
     workspaceId?: string;
 }

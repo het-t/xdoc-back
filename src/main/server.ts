@@ -1,10 +1,15 @@
+import "module-alias/register";
 import setUpApp from "@main/config/app";
-import env from "config/env";
+import env from "@config/env";
+import dbConnection from "@infrastructure/db/mongodb/helpers/db-connection";
 
 const app = setUpApp();
 try {
-    app.listen(env.port, () => {
-        console.log("server is running")
+    dbConnection.connect(env.mongoUrl)
+    .then(() => {
+        app.listen(env.port, () => {
+            console.log("server is running: ", env.port)
+        })
     })
 }
 catch (err) {

@@ -8,5 +8,5 @@ export namespace LoadUserByEmailRepository {
 export interface LoadUserByEmailRepository {
     loadUserByEmail(
         email: LoadUserByEmailRepository.Request
-    ): LoadUserByEmailRepository.Response;
+    ): Promise<LoadUserByEmailRepository.Response>;
 }

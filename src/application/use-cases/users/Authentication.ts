@@ -1,13 +1,13 @@
-import { AuthenticationInterface } from "@application/interfaces/use-cases/users/AuthenticateInterface";
+import { AuthenticateInterface } from "@application/interfaces/use-cases/users/AuthenticateInterface";
 import { JWTVerifier } from "@application/interfaces/cyptography/JWTVerifier";
 import { ForbiddenError } from "@application/errors/ForbiddenError";
 
-export class Authenticate implements AuthenticationInterface {
+export class Authenticate implements AuthenticateInterface {
     constructor(private readonly jwtVerifier: JWTVerifier) {}
 
     async execute(
-        authenticationToken: AuthenticationInterface.Request
-    ): Promise<AuthenticationInterface.Response> {
+        authenticationToken: AuthenticateInterface.Request
+    ): Promise<AuthenticateInterface.Response> {
         const decodedToken = await this.jwtVerifier.verifyAccessToken(
             authenticationToken
         );

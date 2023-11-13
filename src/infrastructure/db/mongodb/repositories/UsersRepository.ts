@@ -1,16 +1,31 @@
+import { Collection } from "mongodb";
 import { CreateUserRepository } from "@application/interfaces/repositories/users/CreateUserRepository";
 import { LoadUserByEmailRepository } from "@application/interfaces/repositories/users/LoadUserByEmailRepository";
-import { User } from "@domain/entities/user";
+import dbConnection from "../helpers/db-connection";
+import { mapDocument, objectIdToString } from "../helpers/mapper";
 
 export class UserRepository implements
     CreateUserRepository,
     LoadUserByEmailRepository 
 {
-    createUser(userData: CreateUserRepository.Request): string {
-        return ''
+    static async getCollection(): Promise<Collection> {
+        return dbConnection.getCollection('users');
     }
 
-    loadUserByEmail(email: string): User {
-        return new User({id: undefined, email: undefined, password: undefined, isDarkMode: undefined, createdAt: undefined, editedAt: undefined, profilePicture: undefined, workspaces: []});
+    async createUser(userData: CreateUserRepository.Request): Promise<CreateUserRepository.Response> {
+        const collection = await UserRepository.getCollection();
+        const { insertedId } = await collection.insertOne({
+            ...userData,
+            createdAt: Date.now()
+        });
+
+        return objectIdToString(insertedId);
+    }
+
+    async loadUserByEmail(email: LoadUserByEmailRepository.Request): Promise<LoadUserByEmailRepository.Response> {
+        const collection = await UserRepository.getCollection();
+        const rawUser = await collection.findOne({ email });
+        
+        return rawUser && mapDocument(rawUser);
     }
 }

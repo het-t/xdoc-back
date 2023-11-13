@@ -3,10 +3,10 @@ export type ProfilePictureType = {
 }
 
 export type WorkspaceType = {
-    workspaceId: string;
-    workspaceName: string;
-    workspaceIcon: string;
-    favorites: string[];
+    id: string,
+    name: string,
+    icon: string,
+    favourites: string[]
 }
 
 export type UserProps = {

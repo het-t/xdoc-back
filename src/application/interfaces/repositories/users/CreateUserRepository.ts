@@ -8,5 +8,5 @@ export namespace CreateUserRepository {
 export interface CreateUserRepository {
     createUser(
         userData: CreateUserRepository.Request
-    ): CreateUserRepository.Response
+    ): Promise<CreateUserRepository.Response>
 }

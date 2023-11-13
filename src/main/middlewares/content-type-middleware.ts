@@ -8,4 +8,5 @@ export const contentType = (
     if (!res.type) {
         res.type('json');
     }
+    next()
 }

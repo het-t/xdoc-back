@@ -1,9 +1,9 @@
-import env from "config/env";
+import env from "@config/env";
 import { SignIn } from "@application/use-cases/users/SignIn";
 import { BcryptAdaptor } from "@infrastructure/cryptography/BcryptAdaptor";
 import { JWTAdaptor } from "@infrastructure/cryptography/JWTAdaptor";
 import { TokenRepository } from "@infrastructure/db/mongodb/repositories/TokenRepository";
-import { UserRepository } from "@infrastructure/db/mongodb/repositories/usersRepository";
+import { UserRepository } from "@infrastructure/db/mongodb/repositories/UsersRepository";
 
 export const makeSignIn = (): SignIn => {
     const userRepository = new UserRepository();
