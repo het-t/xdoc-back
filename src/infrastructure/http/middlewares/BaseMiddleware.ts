@@ -1,11 +1,11 @@
 import { serverError } from "@infrastructure/http/helpers/http";
-import { HttpRequest } from "@infrastructure/http/interfaces/HttpRequest";
-import { HttpResponse } from "@infrastructure/http/interfaces/HttpResponse";
+import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
+import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 
 export abstract class BaseMiddleware {
-    abstract execute(httpRequest: HttpRequest): Promise<HttpResponse>;
+    abstract execute(httpRequest: IHttpRequest): Promise<IHttpResponse>;
 
-    async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+    async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
         try {
             return await this.execute(httpRequest);
         } catch (error: any) {

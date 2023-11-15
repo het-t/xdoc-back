@@ -1,19 +1,33 @@
-import { HttpRequest } from "@infrastructure/http/interfaces/HttpRequest";
-import { HttpResponse } from "@infrastructure/http/interfaces/HttpResponse";
+import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
+import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { LoadWorkspaceByIdInterface } from "@application/interfaces/use-cases/workspaces/LoadWorkspaceByIdInterface";
-import { ok } from "@infrastructure/http/helpers/http";
+import { badRequest, ok } from "@infrastructure/http/helpers/http";
+import { WorkspaceNotFoundError } from "@application/errors/WorkspaceNotFoundError";
+
+export namespace LoadWorkspaceByIdController {
+    export type Request = IHttpRequest;
+    export type Response = IHttpResponse;
+}
 
 export class LoadWorkspaceByIdController extends BaseController {
-    constructor(private readonly loadWorkspaceById: LoadWorkspaceByIdInterface) {
+    constructor(
+        private readonly loadWorkspaceById: LoadWorkspaceByIdInterface
+    ) {
         super();
     }
 
-    async execute(httpRequest: HttpRequest): Promise<HttpResponse> {
+    async execute(
+        httpRequest: LoadWorkspaceByIdController.Request
+    ): Promise<LoadWorkspaceByIdController.Response> {
         const { id } = httpRequest.params;
         
         const workspaceOrError = await this.loadWorkspaceById.execute(id);
 
+        if (workspaceOrError instanceof WorkspaceNotFoundError) {
+            return badRequest(workspaceOrError)
+        }
+        
         return ok({
             workspace: workspaceOrError
         })

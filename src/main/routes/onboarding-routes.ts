@@ -2,7 +2,7 @@ import { Router } from "express";
 import { expressRouteSetCookieAdapter } from "@main/adapters/express-route-set-cookie-adapter";
 import { makeSignInController } from "@main/factories/controllers/users/sign-in/controller-factory";
 
-export default (router: Router): void => {
+export const onBoadingRoutes = (router: Router): void => {
     router.post(
         '/signin',
         expressRouteSetCookieAdapter(makeSignInController())

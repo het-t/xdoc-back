@@ -1,25 +1,30 @@
-import { HttpRequest } from "@infrastructure/http/interfaces/HttpRequest";
-import { HttpResponse } from "@infrastructure/http/interfaces/HttpResponse";
+import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
+import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { CreateWorkspaceInterface } from "@application/interfaces/use-cases/workspaces/CreateWorkspaceInterface";
-import { ok } from "@infrastructure/http/helpers/http";
+import { created, ok } from "@infrastructure/http/helpers/http";
+
+export namespace CreateWorkspaceController {
+    export type Request = IHttpRequest;
+    export type Response = IHttpResponse<string>;
+}
 
 export class CreateWorkspaceController extends BaseController {
     constructor(private readonly createWorkspace: CreateWorkspaceInterface) {
         super();
     }
 
-    async execute(httpRequest: HttpRequest): Promise<HttpResponse> {
+    async execute(httpRequest: CreateWorkspaceController.Request): Promise<CreateWorkspaceController.Response> {
         const { name, icon, favourites } = httpRequest.body;
 
-        const workspaceOrError = await this.createWorkspace.execute({
+        const workspaceIdOrError = await this.createWorkspace.execute({
             name,
             icon,
             favourites
         });
 
-        return ok({
-            workspace: workspaceOrError
+        return created({
+            workspaceId: workspaceIdOrError
         })
     }
 }

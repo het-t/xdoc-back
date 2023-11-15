@@ -1,5 +1,5 @@
-import { HttpRequest } from "@infrastructure/http/interfaces/HttpRequest";
-import { HttpResponse } from "@infrastructure/http/interfaces/HttpResponse";
+import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
+import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { SignUp } from "@application/use-cases/users/SignUp";
 import { InvalidUserError } from "@application/errors/InvalidUserError";
@@ -10,7 +10,7 @@ export class SignUpController extends BaseController {
         super();
     }
     
-    async execute(httpRequest: HttpRequest): Promise<HttpResponse> {
+    async execute(httpRequest: IHttpRequest): Promise<IHttpResponse> {
         const { name, email, password, profilePicture } = httpRequest.body;
         
         //create default "{name}'s xdoc" workspace

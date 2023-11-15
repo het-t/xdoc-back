@@ -1,16 +1,15 @@
 import { BaseController } from "@infrastructure/http/controllers/BaseController"
-import { HttpRequest } from "@infrastructure/http/interfaces/HttpRequest"
+import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest"
 import { Request, Response } from "express";
 
 export const expressRouteAdapter = (controller: BaseController) => async (req: Request, res: Response) => {
-    const httpRequest: HttpRequest = {
+    const httpRequest: IHttpRequest = {
         body: req.body,
         params: req.params,
         headers: req.headers,
         userId: req.userId,
         workspaceId: req.workspaceId
     }
-
     const httpResponse = await controller.handle(httpRequest);
 
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {

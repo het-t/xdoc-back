@@ -15,3 +15,8 @@ export const mapDocument = (document: any): any => {
     const id = objectIdToString(_id);
     return { ...rest, id };
 }
+
+export const mapToDocument = (rawDocument: any): any => {
+    const { id, ...rest } = rawDocument;
+    return { ...rest, _id: id };
+}

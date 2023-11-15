@@ -1,14 +1,14 @@
-import { HttpResponse } from "../interfaces/HttpResponse";
-import { HttpRequest } from "../interfaces/HttpRequest";
-import { Validation } from "../interfaces/Validation";
+import { IHttpResponse } from "../interfaces/IHttpResponse";
+import { IHttpRequest } from "../interfaces/IHttpRequest";
+import { Validation } from "../interfaces/IValidation";
 import { badRequest, serverError } from "../helpers/http";
 
 export abstract class BaseController {
     constructor(private readonly validation?: Validation) {}
 
-    abstract execute(httpRequest: HttpRequest): Promise<HttpResponse>
+    abstract execute(httpRequest: IHttpRequest): Promise<IHttpResponse>
 
-    async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+    async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
         try {
             const error = this.validation?.validate(httpRequest);
             if (error) {
@@ -17,8 +17,7 @@ export abstract class BaseController {
             return await this.execute(httpRequest);
         }
         catch (error: any) {
-            console.log(error)
-            return serverError(error)
+            return serverError(error);
         }
     }
 }

@@ -1,14 +1,14 @@
 import { BaseController } from "../BaseController";
-import { HttpRequest } from "../../interfaces/HttpRequest";
-import { HttpResponse } from "../../interfaces/HttpResponse";
+import { IHttpRequest } from "../../interfaces/IHttpRequest";
+import { IHttpResponse } from "../../interfaces/IHttpResponse";
 import { InvalidAuthTokenError } from "../../errors/InvalidAuthTokenError";
 import { AuthTokenNotProvidedError } from "../../errors/AuthTokenNotProvidedError";
 import { ok, unauthorized } from "../../helpers/http";
 import { GetAuthenticationTokenInterface } from "@application/interfaces/use-cases/users/GetAuthenticationTokenInterface";
 
 export namespace GetAuthenticationTokenController {
-    export type Request = HttpRequest;
-    export type Response = HttpResponse<
+    export type Request = IHttpRequest;
+    export type Response = IHttpResponse<
         { accessToken: string } | 
         InvalidAuthTokenError | 
         AuthTokenNotProvidedError 

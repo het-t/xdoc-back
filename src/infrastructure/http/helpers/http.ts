@@ -1,10 +1,10 @@
-import { HttpResponse } from "../interfaces/HttpResponse";
+import { IHttpResponse } from "../interfaces/IHttpResponse";
 import ServerError from "../errors/ServerError";
 
 export const ok = <T = any>(
     body: T,
     headers?: { token: string}
-): HttpResponse<T> => {
+): IHttpResponse<T> => {
     return {
         statusCode: 200,
         body,
@@ -12,12 +12,19 @@ export const ok = <T = any>(
     }
 }
 
-export const badRequest = (error: Error): HttpResponse<Error> => ({
+export const created = <T = any>(body: T): IHttpResponse => {
+    return {
+        statusCode: 201,
+        body
+    }
+}
+
+export const badRequest = (error: Error): IHttpResponse<Error> => ({
     statusCode: 400,
     body: error
 })
 
-export const serverError = (error: Error): HttpResponse<Error> => {
+export const serverError = (error: Error): IHttpResponse<Error> => {
     const stack = error instanceof Error ? error.stack : undefined;
     return {
         statusCode: 500,
@@ -25,12 +32,12 @@ export const serverError = (error: Error): HttpResponse<Error> => {
     }
 }
 
-export const unauthorized = (error: Error): HttpResponse<Error> => ({
+export const unauthorized = (error: Error): IHttpResponse<Error> => ({
     statusCode: 401,
     body: error
 })
 
-export const forbidden = (error: Error): HttpResponse<Error> => ({
+export const forbidden = (error: Error): IHttpResponse<Error> => ({
   statusCode: 403,
   body: error,
 });

@@ -19,7 +19,7 @@ export class SignIn implements SignInInterface {
     ): Promise<SignInInterface.Response> {
         const { email, password } = credentials;
 
-        const user = this.loadUserByEmailRepository.loadUserByEmail(email);
+        const user = await this.loadUserByEmailRepository.loadUserByEmail(email);
 
         if (!user) {
             return new InvalidUserError();

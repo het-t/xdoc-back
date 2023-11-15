@@ -1,5 +1,5 @@
-import { HttpRequest } from "@infrastructure/http/interfaces/HttpRequest";
-import { HttpResponse } from "@infrastructure/http/interfaces/HttpResponse";
+import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
+import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseMiddleware } from "../BaseMiddleware";
 import { AuthTokenNotProvidedError } from "@infrastructure/http/errors/AuthTokenNotProvidedError";
 import { InvalidAuthTokenError } from "@infrastructure/http/errors/InvalidAuthTokenError";
@@ -8,13 +8,13 @@ import { ForbiddenError } from "@application/errors/ForbiddenError";
 import { ok, forbidden } from "@infrastructure/http/helpers/http"
 
 export namespace AuthMiddleware {
-    export type Request = HttpRequest<
+    export type Request = IHttpRequest<
         undefined,
         undefined,
         { authorization: string }
     >;
     
-    export type Response = HttpResponse<
+    export type Response = IHttpResponse<
         { userId: string }
         | AuthTokenNotProvidedError
         | InvalidAuthTokenError
