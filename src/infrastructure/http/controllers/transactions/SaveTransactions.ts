@@ -1,6 +1,5 @@
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
-import { IOperation } from "@infrastructure/http/interfaces/IOperation";
 import { BaseController } from "../BaseController";
 import { badRequest, ok } from "@infrastructure/http/helpers/http";
 import { InvalidOperationPointer } from "@infrastructure/http/errors/InvalidOperationPointer";
@@ -10,6 +9,7 @@ import { ITransaction } from "@infrastructure/http/interfaces/ITransaction";
 import { IUpdateBlock } from "@application/interfaces/use-cases/blocks/IUpdateBlock";
 import { IListAfter } from "@application/interfaces/use-cases/space-view/IListAfter";
 import { IListBefore } from "@application/interfaces/use-cases/space-view/IListBefore";
+import { IListRemove } from "@application/interfaces/use-cases/space-view/IListRemove";
 
 export namespace SaveTransactions {
     export type Request = IHttpRequest;
@@ -21,7 +21,8 @@ export class SaveTransactions extends BaseController {
         private readonly createBlock: ICreateBlock,
         private readonly uploadBlock: IUpdateBlock,
         private readonly listAfter: IListAfter,
-        private readonly listBefore: IListBefore
+        private readonly listBefore: IListBefore,
+        private readonly listRemove: IListRemove
     ) {
         super();
     }
@@ -72,6 +73,14 @@ export class SaveTransactions extends BaseController {
                                 
                                 case "listBefore":
                                     await this.listBefore.execute({
+                                        pointer: operation.pointer,
+                                        path: operation.path.join('.'),
+                                        args: operation.args
+                                    })
+                                    break;
+                                
+                                case "listRemove":
+                                    await this.listRemove.execute({
                                         pointer: operation.pointer,
                                         path: operation.path.join('.'),
                                         args: operation.args

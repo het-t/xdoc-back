@@ -1,11 +1,13 @@
+import dbConnection from "../helpers/db-connection";
+import { ObjectId } from "mongodb";
 import { IListAfterRepository } from "@application/interfaces/repositories/space-view/IListAfterRepository";
 import { IListBeforeRepository } from "@application/interfaces/repositories/space-view/IListBeforeRepository";
-import dbConnection from "../helpers/db-connection";
-import { ObjectId, PushOperator } from "mongodb";
+import { IListRemoveRepository } from "@application/interfaces/repositories/space-view/IListRemoveRepository";
 
 export class SpaceViewRepository implements
     IListAfterRepository,
-    IListBeforeRepository
+    IListBeforeRepository,
+    IListRemoveRepository
 {
     static async getCollection() {
         return await dbConnection.getCollection("space_view")
@@ -51,6 +53,19 @@ export class SpaceViewRepository implements
                         $each: [args.id],
                         $position: positionToInsert >= 1 ? positionToInsert: 0
                     }
+                }
+            }
+        )
+    }
+
+    async listRemove({ pointer, path, args }: IListRemoveRepository.Request): Promise<IListRemoveRepository.Response> {
+        const collection = await SpaceViewRepository.getCollection();
+        
+        await collection.updateOne(
+            { _id: pointer.id as unknown as ObjectId },
+            {
+                $pull: {
+                    [path]: args.id
                 }
             }
         )

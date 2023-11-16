@@ -4,6 +4,7 @@ import { makeCreateBlock } from "@main/factories/use-cases/blocks/create-block-f
 import { makeUpdateBlockById } from "@main/factories/use-cases/blocks/update-block-by-id-factory";
 import { makeListAfter } from "@main/factories/use-cases/space-view/list-after-factory";
 import { makeListBefore } from "@main/factories/use-cases/space-view/list-before-factory";
+import { makeListRemove } from "@main/factories/use-cases/space-view/list-remove-factory";
 
 export const makeSaveTransactionsController = (): BaseController => {
 
@@ -11,11 +12,13 @@ export const makeSaveTransactionsController = (): BaseController => {
     const updateBlockByIdUsecase = makeUpdateBlockById();
     const listAfterUsecase = makeListAfter();
     const listBeforeUsecase = makeListBefore();
+    const listRemoveUsecase = makeListRemove();
 
     return new SaveTransactions(
         createBlockUsecase,
         updateBlockByIdUsecase,
         listAfterUsecase,
-        listBeforeUsecase
+        listBeforeUsecase,
+        listRemoveUsecase
     );
 }
