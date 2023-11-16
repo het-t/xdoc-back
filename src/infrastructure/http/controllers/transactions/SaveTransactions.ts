@@ -8,6 +8,8 @@ import { InvalidOperationCommand } from "@infrastructure/http/errors/InvalidOper
 import { ICreateBlock } from "@application/interfaces/use-cases/blocks/ICreateBlock";
 import { ITransaction } from "@infrastructure/http/interfaces/ITransaction";
 import { IUpdateBlock } from "@application/interfaces/use-cases/blocks/IUpdateBlock";
+import { IListAfter } from "@application/interfaces/use-cases/space-view/IListAfter";
+import { IListBefore } from "@application/interfaces/use-cases/space-view/IListBefore";
 
 export namespace SaveTransactions {
     export type Request = IHttpRequest;
@@ -17,7 +19,9 @@ export namespace SaveTransactions {
 export class SaveTransactions extends BaseController {
     constructor(
         private readonly createBlock: ICreateBlock,
-        private readonly uploadBlock: IUpdateBlock
+        private readonly uploadBlock: IUpdateBlock,
+        private readonly listAfter: IListAfter,
+        private readonly listBefore: IListBefore
     ) {
         super();
     }
@@ -51,6 +55,29 @@ export class SaveTransactions extends BaseController {
                                         args: operation.args
                                     })
                                     break;
+                                default:
+                                    throw new InvalidOperationCommand();
+                            }
+                            break;
+                        
+                        case "space_view":
+                            switch (operation.command) {
+                                case "listAfter":
+                                    await this.listAfter.execute({
+                                        pointer: operation.pointer,
+                                        path: operation.path.join('.'),
+                                        args: operation.args
+                                    })
+                                    break;
+                                
+                                case "listBefore":
+                                    await this.listBefore.execute({
+                                        pointer: operation.pointer,
+                                        path: operation.path.join('.'),
+                                        args: operation.args
+                                    })
+                                    break;
+                                
                                 default:
                                     throw new InvalidOperationCommand();
                             }
