@@ -9,7 +9,7 @@ export class UserRepository implements
     LoadUserByEmailRepository 
 {
     static async getCollection(): Promise<Collection> {
-        return dbConnection.getCollection('users');
+        return dbConnection.getCollection('user');
     }
 
     async createUser(userData: CreateUserRepository.Request): Promise<CreateUserRepository.Response> {

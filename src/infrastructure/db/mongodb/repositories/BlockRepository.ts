@@ -11,7 +11,7 @@ export class BlockRepository implements
     IUpdateBlockByIdRepository
 {
     static async getCollection(): Promise<Collection> {
-        return await dbConnection.getCollection('blocks');
+        return await dbConnection.getCollection('block');
     }
 
     async loadBlockById(

@@ -10,7 +10,7 @@ export class WorkspaceRepository implements
     LoadWorkspaceByIdRepository
 {
     static async getCollection(): Promise<Collection> {
-        return dbConnection.getCollection('workspaces');
+        return dbConnection.getCollection('workspace');
     }    
 
     async loadWorkspaceById(id: string): Promise<Workspace> {
