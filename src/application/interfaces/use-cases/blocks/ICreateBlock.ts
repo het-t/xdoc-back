@@ -1,5 +1,5 @@
-import { IPointer } from "@infrastructure/http/interfaces/IOperation";
 import { UseCase } from "../UseCase";
+import { IPointer } from "@infrastructure/http/interfaces/IOperation";
 
 export namespace ICreateBlock {
     export type Request = {

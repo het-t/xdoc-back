@@ -10,6 +10,9 @@ import { IUpdateBlock } from "@application/interfaces/use-cases/blocks/IUpdateBl
 import { IListAfter } from "@application/interfaces/use-cases/space-view/IListAfter";
 import { IListBefore } from "@application/interfaces/use-cases/space-view/IListBefore";
 import { IListRemove } from "@application/interfaces/use-cases/space-view/IListRemove";
+import { ICollectionUpdate } from "@application/interfaces/use-cases/collection/ICollectionUpdate";
+import { ICollectionViewUpdate } from "@application/interfaces/use-cases/collection-view/ICollectionViewUpdate";
+import { ICollectionCreate } from "@application/interfaces/use-cases/collection/ICollectionCreate";
 
 export namespace SaveTransactions {
     export type Request = IHttpRequest;
@@ -22,7 +25,10 @@ export class SaveTransactions extends BaseController {
         private readonly uploadBlock: IUpdateBlock,
         private readonly listAfter: IListAfter,
         private readonly listBefore: IListBefore,
-        private readonly listRemove: IListRemove
+        private readonly listRemove: IListRemove,
+        private readonly collectionCreate: ICollectionCreate,
+        private readonly collectionUpdate: ICollectionUpdate,
+        private readonly collectionViewUpdate: ICollectionViewUpdate,
     ) {
         super();
     }
@@ -35,12 +41,13 @@ export class SaveTransactions extends BaseController {
         if (!transactions?.length) return badRequest(new Error("Invalid request"));
 
         try {
-            for (let transaction of transactions) {
+            for (let transaction of transactions) {                
                 if (!transaction.operations?.length) return badRequest(new Error("Invalid transaction"));
-                
+                                
                 for (let operation of transaction.operations) {
+
                     switch (operation.pointer.table) {
-                        case "blocks":
+                        case "block":
                             switch (operation.command) {
                                 case "set":
                                     await this.createBlock.execute({
@@ -92,6 +99,37 @@ export class SaveTransactions extends BaseController {
                             }
                             break;
                         
+                        case "collection_view": 
+                            switch (operation.command) {
+                                case "update": 
+                                    await this.collectionViewUpdate.execute({
+                                        pointer: operation.pointer,
+                                        path: operation.path,
+                                        args: operation.args
+                                    });
+                                    break;
+                            }
+                            break;
+                        
+                        case "collection": 
+                            switch (operation.command) {
+                                case "set": 
+                                    await this.collectionCreate.execute({
+                                        pointer: operation.pointer,
+                                        args: operation.args
+                                    });
+                                    break;
+                                    
+                                case "update":
+                                    await this.collectionUpdate.execute({
+                                        pointer: operation.pointer, 
+                                        path: operation.path,
+                                        args: operation.args
+                                    });
+                                    break;
+                            }
+                            break;
+
                         default:
                             throw new InvalidOperationPointer();
                     }
@@ -104,6 +142,9 @@ export class SaveTransactions extends BaseController {
                 || error instanceof InvalidOperationPointer
             ) {
                 return badRequest(error);
+            }
+            else {
+                return badRequest(new Error("unknown error encountered"))
             }
         }
 

@@ -26,7 +26,7 @@ export class BlockRepository implements
     }
 
     async createBlock(
-        { args }: ICreateBlockRepository.Request
+        args: ICreateBlockRepository.Request
     ): Promise<ICreateBlockRepository.Response> {
         const collection = await BlockRepository.getCollection();
 
