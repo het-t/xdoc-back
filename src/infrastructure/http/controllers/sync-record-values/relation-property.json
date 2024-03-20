@@ -1,0 +1,17 @@
+{
+    "{Tp`": {
+        "name": "db1_key 1",
+        "type": "relation",
+        "version": "v2",
+        "property": "eg<A",
+        "autoRelate": {
+            "enabled": false
+        },
+        "collection_id": "62d522c3-b920-42f5-9ac8-43c953e4b4ac",
+        "collection_pointer": {
+            "id": "62d522c3-b920-42f5-9ac8-43c953e4b4ac",
+            "table": "collection",
+            "spaceId": "f2cf1fd1-8789-4ddd-9190-49f41966c446"
+        }
+    }
+}

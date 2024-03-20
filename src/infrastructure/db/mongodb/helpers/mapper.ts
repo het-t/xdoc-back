@@ -12,7 +12,7 @@ export const objectIdToString = (objectId: ObjectId): string => {
 
 export const mapDocument = (document: any): any => {
     const { _id, ...rest } = document;
-    const id = objectIdToString(_id);
+    const id = _id;
     return { ...rest, id };
 }
 

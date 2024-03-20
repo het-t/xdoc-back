@@ -1,7 +1,7 @@
 import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
-import { CreateWorkspaceInterface } from "@application/interfaces/use-cases/workspaces/CreateWorkspaceInterface";
+import { ICreateWorkspaceInterface } from "@application/interfaces/use-cases/spaces/ICreateWorkspaceInterface";
 import { created, ok } from "@infrastructure/http/helpers/http";
 
 export namespace CreateWorkspaceController {
@@ -10,7 +10,7 @@ export namespace CreateWorkspaceController {
 }
 
 export class CreateWorkspaceController extends BaseController {
-    constructor(private readonly createWorkspace: CreateWorkspaceInterface) {
+    constructor(private readonly createWorkspace: ICreateWorkspaceInterface) {
         super();
     }
 

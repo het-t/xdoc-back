@@ -1,13 +1,15 @@
-import { CreateWorkspaceRepository } from "@application/interfaces/repositories/workspaces/CreateWorkspaceRepository";
-import { LoadWorkspaceByIdRepository } from "@application/interfaces/repositories/workspaces/LoadWorkspaceById";
+import { ICreateWorkspaceRepository } from "@application/interfaces/repositories/spaces/ICreateWorkspaceRepository";
+import { ILoadWorkspaceByIdRepository } from "@application/interfaces/repositories/spaces/ILoadWorkspaceById";
 import { Collection } from "mongodb";
 import dbConnection from "../helpers/db-connection";
 import { Workspace } from "@domain/entities/workspace";
 import { mapDocument, objectIdToString, stringToObjectId } from "../helpers/mapper";
+import { IGetSpacesRepository } from "@application/interfaces/repositories/spaces/IGetSpacesRepository";
 
 export class WorkspaceRepository implements
-    CreateWorkspaceRepository,
-    LoadWorkspaceByIdRepository
+    ICreateWorkspaceRepository,
+    ILoadWorkspaceByIdRepository,
+    IGetSpacesRepository
 {
     static async getCollection(): Promise<Collection> {
         return dbConnection.getCollection('workspace');
@@ -22,12 +24,18 @@ export class WorkspaceRepository implements
         return workspace && mapDocument(workspace);
     }
 
-    async createWorkspace(workspaceData: CreateWorkspaceRepository.Request): Promise<CreateWorkspaceRepository.Response> {
+    async createWorkspace(
+        workspaceData: ICreateWorkspaceRepository.Request
+    ): Promise<ICreateWorkspaceRepository.Response> {
         const collection = await WorkspaceRepository.getCollection();
         const { insertedId } = await collection.insertOne({
             ...workspaceData
         });
 
         return objectIdToString(insertedId);
+    }
+
+    async getSpaces({ userId }: IGetSpacesRepository.Request): Promise<object> {
+        return {};
     }
 }

@@ -1,4 +1,4 @@
-import { CreateWorkspace } from "@application/use-cases/workspaces/CreateWorkspace";
+import { CreateWorkspace } from "@application/use-cases/spaces/CreateWorkspace";
 import { WorkspaceRepository } from "@infrastructure/db/mongodb/repositories/WorkspaceRepository";
 
 export const makeCreateWorkspace = (): CreateWorkspace => {

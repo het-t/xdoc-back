@@ -18,8 +18,9 @@ export class BlockRepository implements
         id: ILoadBlockByIdRepository.Request
     ): Promise<ILoadBlockByIdRepository.Response> {
         const collection = await BlockRepository.getCollection();
-        const block = collection.findOne({
-            _id: stringToObjectId(id)
+
+        const block = await collection.findOne({
+            _id: id as unknown as ObjectId
         })
 
         return block && mapDocument(block);
@@ -36,7 +37,7 @@ export class BlockRepository implements
     }
 
     async updateBlockById(
-        { pointer, path, args }: IUpdateBlockByIdRepository.Request
+        { pointer, args }: IUpdateBlockByIdRepository.Request
     ): Promise<IUpdateBlockByIdRepository.Response> {
         const collection = await BlockRepository.getCollection();
 
@@ -45,8 +46,11 @@ export class BlockRepository implements
                 _id: pointer.id as unknown as ObjectId
             },
             {
-                $set: path ? { [path]: args } : args
+                $set: args
             }
         )
     }
 }
+// {
+//     $set: path ? { [path]: args } : args
+// }

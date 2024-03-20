@@ -1,10 +1,10 @@
 import { HashCompare } from "@application/interfaces/cyptography/HashCompare";
 import { SignInInterface } from "@application/interfaces/use-cases/users/SignInInterface";
 import { JWTGenerator } from "@application/interfaces/cyptography/JWTGenerator";
-import { LoadUserByEmailRepository } from "@application/interfaces/repositories/users/LoadUserByEmailRepository";
+import { LoadUserByEmailRepository } from "@application/interfaces/repositories/users/ILoadUserByEmailRepository";
 import { InvalidUserError } from "@application/errors/InvalidUserError";
 import { InvalidPasswordError } from "@application/errors/InvalidPasswordError";
-import { CreateTokenRepository } from "@application/interfaces/repositories/tokens/CreateTokenRepository";
+import { CreateTokenRepository } from "@application/interfaces/repositories/tokens/ICreateTokenRepository";
 
 export class SignIn implements SignInInterface {
     constructor(
