@@ -1,10 +1,10 @@
-export namespace DeleteTokenRepository {
+export namespace IDeleteTokenRepository {
     export type Request = string;
     export type Response = void;
 }
 
-export interface DeleteTokenRepository {
+export interface IDeleteTokenRepository {
     deleteToken(
-        token: DeleteTokenRepository.Request
-    ): Promise<DeleteTokenRepository.Response>;
+        token: IDeleteTokenRepository.Request
+    ): Promise<IDeleteTokenRepository.Response>;
 }

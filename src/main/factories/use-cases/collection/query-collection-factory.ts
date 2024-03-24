@@ -1,5 +1,5 @@
 import { CollectionQuery } from "@application/use-cases/collection/CollectionQuery";
-import { CollectionRepository } from "@infrastructure/db/mongodb/repositories/CollectionRepository";
+import { CollectionRepository } from "@infrastructure/db/postgres/repositories/CollectionRepository";
 
 export const makeQueryCollection = (): CollectionQuery => {
     const collectionRepository = new CollectionRepository();

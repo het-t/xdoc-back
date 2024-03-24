@@ -1,4 +1,4 @@
-export namespace GetTokenRepository {
+export namespace IGetTokenRepository {
     export type Request = string;
     export type Response = {
         _id: string;
@@ -7,8 +7,8 @@ export namespace GetTokenRepository {
     } | null;
 }
 
-export interface GetTokenRepository {
+export interface IGetTokenRepository {
     getToken(
-        token: GetTokenRepository.Request
-    ): Promise<GetTokenRepository.Response>;
+        token: IGetTokenRepository.Request
+    ): Promise<IGetTokenRepository.Response>;
 }

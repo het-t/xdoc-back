@@ -3,7 +3,7 @@ import { InvalidTokenError } from "@application/errors/InvalidTokenError";
 import { JWTGenerator } from "@application/interfaces/cyptography/JWTGenerator";
 import { JWTVerifier } from "@application/interfaces/cyptography/JWTVerifier";
 import { GetTokenRepository } from "@application/interfaces/repositories/tokens/GetTokenRepository";
-import { GetAuthenticationTokenInterface } from "@application/interfaces/use-cases/users/GetAuthenticationTokenInterface";
+import { GetAuthenticationTokenInterface } from "@application/interfaces/use-cases/users/IGetAuthenticationTokenInterface";
 
 export class GetAuthenticationToken implements GetAuthenticationTokenInterface {
     constructor(

@@ -1,4 +1,4 @@
-import { AuthenticateInterface } from "@application/interfaces/use-cases/users/AuthenticateInterface";
+import { AuthenticateInterface } from "@application/interfaces/use-cases/users/IAuthenticateInterface";
 import { JWTVerifier } from "@application/interfaces/cyptography/JWTVerifier";
 import { ForbiddenError } from "@application/errors/ForbiddenError";
 

@@ -1,3 +1,3 @@
 export interface HashCompare {
-    compare(plaintext: string, hash: string): Promise<boolean> | boolean;
+    compare(plaintext: string, hash: string): Promise<boolean>;
 }

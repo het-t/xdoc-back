@@ -1,5 +1,5 @@
 import { CollectionCreate } from "@application/use-cases/collection/CollectionCreate";
-import { CollectionRepository } from "@infrastructure/db/mongodb/repositories/CollectionRepository";
+import { CollectionRepository } from "@infrastructure/db/postgres/repositories/CollectionRepository";
 
 export const makeCreateCollection = (): CollectionCreate => {
     const collectionRepository = new CollectionRepository();

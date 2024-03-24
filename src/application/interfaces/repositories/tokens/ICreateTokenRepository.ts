@@ -1,10 +1,10 @@
-export namespace CreateTokenRepository {
+export namespace ICreateTokenRepository {
     export type Request = string;
     export type Response = string; 
 }
 
-export interface CreateTokenRepository {
+export interface ICreateTokenRepository {
     createToken(
-        token: CreateTokenRepository.Request
-    ): Promise<CreateTokenRepository.Response>;
+        token: ICreateTokenRepository.Request
+    ): Promise<ICreateTokenRepository.Response>;
 }

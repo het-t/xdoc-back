@@ -1,34 +1,34 @@
 import { HashCompare } from "@application/interfaces/cyptography/HashCompare";
-import { SignInInterface } from "@application/interfaces/use-cases/users/SignInInterface";
+import { ISignInInterface } from "@application/interfaces/use-cases/users/ISignInInterface";
 import { JWTGenerator } from "@application/interfaces/cyptography/JWTGenerator";
-import { LoadUserByEmailRepository } from "@application/interfaces/repositories/users/ILoadUserByEmailRepository";
+import { ILoadUserByEmailRepository } from "@application/interfaces/repositories/users/ILoadUserByEmailRepository";
 import { InvalidUserError } from "@application/errors/InvalidUserError";
 import { InvalidPasswordError } from "@application/errors/InvalidPasswordError";
-import { CreateTokenRepository } from "@application/interfaces/repositories/tokens/ICreateTokenRepository";
+import { ICreateTokenRepository } from "@application/interfaces/repositories/tokens/ICreateTokenRepository";
 
-export class SignIn implements SignInInterface {
+export class SignIn implements ISignInInterface {
     constructor(
-        public readonly loadUserByEmailRepository: LoadUserByEmailRepository,
-        public readonly createTokenRepository: CreateTokenRepository,
+        public readonly loadUserByEmailRepository: ILoadUserByEmailRepository,
+        public readonly createTokenRepository: ICreateTokenRepository,
         public readonly jwtGenerator: JWTGenerator,
         public readonly hashCompare: HashCompare,
     ) {}
 
     async execute(
-        credentials: SignInInterface.Request
-    ): Promise<SignInInterface.Response> {
+        credentials: ISignInInterface.Request
+    ): Promise<ISignInInterface.Response> {
         const { email, password } = credentials;
 
-        const user = await this.loadUserByEmailRepository.loadUserByEmail(email);
+        const [ user ] = await this.loadUserByEmailRepository.loadUserByEmail(email);
 
         if (!user) {
             return new InvalidUserError();
         }
 
-        const isPasswordValid = this.hashCompare.compare(
+        const isPasswordValid = await this.hashCompare.compare(
             password,
             user.password
-        )
+        );
 
         if (!isPasswordValid) {
             return new InvalidPasswordError();
@@ -41,7 +41,13 @@ export class SignIn implements SignInInterface {
 
         return {
             authenticationToken,
-            refreshToken
+            refreshToken,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                alive: user.alive
+            }
         }
     }
 }

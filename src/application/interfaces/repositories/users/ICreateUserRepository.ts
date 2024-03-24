@@ -1,12 +1,12 @@
-import { UserProps } from "@domain/entities/user";
+import { IUser } from "@domain/entities/IUser";
 
-export namespace CreateUserRepository {
-    export type Request = Omit<UserProps, "id" | "createdAt" | "editedAt">
-    export type Response = string;
+export namespace ICreateUserRepository {
+    export type Request = Omit<IUser, "alive">;
+    export type Response = void;
 }
 
-export interface CreateUserRepository {
+export interface ICreateUserRepository {
     createUser(
-        userData: CreateUserRepository.Request
-    ): Promise<CreateUserRepository.Response>
+        userData: ICreateUserRepository.Request
+    ): Promise<ICreateUserRepository.Response>
 }

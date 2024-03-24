@@ -25,7 +25,7 @@ export class JWTAdaptor implements
         try {
             return jwt.verify(token, this.authenticationTokenSecret) as string
         } catch (error) {
-            return null;
+            return "null";
         }
     }
 
@@ -33,7 +33,7 @@ export class JWTAdaptor implements
         try {
             return jwt.verify(token, this.refreshTokenSecret) as string
         } catch (error) {
-            return null;
+            return "null";
         }
     }
 }

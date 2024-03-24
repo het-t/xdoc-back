@@ -6,9 +6,11 @@ export const expressRouteSetCookieAdapter = (controller: BaseController) => asyn
     const httpRequest: IHttpRequest = {
         body: req.body,
         params: req.params,
-        headers: req.headers,
-        userId: req.userId
+        headers: req.headers
     }
+
+    const userId = "express-route-adapter-user-id";
+    const workspaceId = "express-route-adapter-workspace-id";
 
     const httpResponse = await controller.handle(httpRequest);
     const refreshToken = httpResponse.headers?.token;

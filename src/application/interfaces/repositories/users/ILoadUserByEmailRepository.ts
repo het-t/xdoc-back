@@ -1,12 +1,12 @@
-import { User } from "@domain/entities/user";
+import { IUser } from "@domain/entities/IUser";
 
-export namespace LoadUserByEmailRepository {
+export namespace ILoadUserByEmailRepository {
     export type Request = string;
-    export type Response = User | null;
+    export type Response = IUser[];
 }
 
-export interface LoadUserByEmailRepository {
+export interface ILoadUserByEmailRepository {
     loadUserByEmail(
-        email: LoadUserByEmailRepository.Request
-    ): Promise<LoadUserByEmailRepository.Response>;
+        email: ILoadUserByEmailRepository.Request
+    ): Promise<ILoadUserByEmailRepository.Response>;
 }

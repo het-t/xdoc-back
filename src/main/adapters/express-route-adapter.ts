@@ -6,10 +6,12 @@ export const expressRouteAdapter = (controller: BaseController) => async (req: R
     const httpRequest: IHttpRequest = {
         body: req.body,
         params: req.params,
-        headers: req.headers,
-        userId: req.userId,
-        workspaceId: req.workspaceId
+        headers: req.headers
     }
+
+    const userId = "express-route-adapter-user-id";
+    const workspaceId = "express-route-adapter-workspace-id";
+
     const httpResponse = await controller.handle(httpRequest);
 
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {

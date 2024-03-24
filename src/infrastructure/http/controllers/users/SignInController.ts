@@ -4,7 +4,8 @@ import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { ok, unauthorized } from "@infrastructure/http/helpers/http";
-import { SignInInterface } from "@application/interfaces/use-cases/users/SignInInterface";
+import { ISignInInterface } from "@application/interfaces/use-cases/users/ISignInInterface";
+import { IUser } from "@domain/entities/IUser";
 
 export namespace SignInController {
     export type Request = IHttpRequest;
@@ -17,27 +18,34 @@ export namespace SignInController {
 
 export class SignInController extends BaseController {
     constructor(
-        private readonly signIn: SignInInterface
+        private readonly signIn: ISignInInterface
     ) {
         super()
     }
 
-    async execute(httpRequest: SignInController.Request): Promise<SignInController.Response> {
+    async execute(
+        httpRequest: SignInController.Request
+    ): Promise<SignInController.Response> {
         const { email, password } = httpRequest.body;
 
         const authenticationOrError = await this.signIn.execute({
             email,
             password
-        })
+        });
 
         if (authenticationOrError instanceof InvalidPasswordError || authenticationOrError instanceof InvalidUserError) {
             return unauthorized(authenticationOrError);
         }
 
-        const { authenticationToken, refreshToken } = authenticationOrError;
+        const { authenticationToken, refreshToken, user } = authenticationOrError;
 
         return ok(
-            { authenticationToken },
+            { 
+                authenticationToken,
+                record_map: {
+                    xdoc_user: [ user ]
+                }
+             },
             { token: refreshToken }
         )
     }

@@ -6,6 +6,9 @@ export default {
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || "refreshtokensecret",
     bcryptSalt: 10,
     nodeEnv: 'test',
-    mongoUrl: "mongodb://localhost:27017/",
-    mongoDbName: "xdoc"
+    pgDatabase: process.env.PG_DATABASE,
+    pgUser: process.env.PG_USER,
+    pgPassword: process.env.PG_PASSWORD,
+    pgHost: process.env.PG_HOST,
+    pgPort: process.env.PG_PORT
 }

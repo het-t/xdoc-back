@@ -1,5 +1,5 @@
 import { Authenticate } from "@application/use-cases/users/Authentication";
-import { AuthenticateInterface } from "@application/interfaces/use-cases/users/AuthenticateInterface"
+import { AuthenticateInterface } from "@application/interfaces/use-cases/users/IAuthenticateInterface"
 import { JWTAdaptor } from "@infrastructure/cryptography/JWTAdaptor";
 import env from "@config/env";
 

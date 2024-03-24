@@ -3,7 +3,7 @@ import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseMiddleware } from "../BaseMiddleware";
 import { AuthTokenNotProvidedError } from "@infrastructure/http/errors/AuthTokenNotProvidedError";
 import { InvalidAuthTokenError } from "@infrastructure/http/errors/InvalidAuthTokenError";
-import { AuthenticateInterface } from "@application/interfaces/use-cases/users/AuthenticateInterface";
+import { AuthenticateInterface } from "@application/interfaces/use-cases/users/IAuthenticateInterface";
 import { ForbiddenError } from "@application/errors/ForbiddenError";
 import { ok, forbidden } from "@infrastructure/http/helpers/http"
 
