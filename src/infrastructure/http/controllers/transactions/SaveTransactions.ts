@@ -33,7 +33,6 @@ export class SaveTransactionsController extends BaseController {
                                 
                 for (let operation of transaction.operations) {
                     this.handleOperation.execute(operation);
-                    console.log(operation);
                 }
             }
         } catch (error: any) {

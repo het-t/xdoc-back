@@ -20,7 +20,7 @@ export class HandleOperation implements IHandleOperation {
             case "update":
                 await this.updateOperatinRepository.updateOperation(operation);
                 break;
-                
+            
             default:
                 console.log(operation);
         }
