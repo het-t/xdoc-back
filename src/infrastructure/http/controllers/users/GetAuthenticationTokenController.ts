@@ -4,7 +4,7 @@ import { IHttpResponse } from "../../interfaces/IHttpResponse";
 import { InvalidAuthTokenError } from "../../errors/InvalidAuthTokenError";
 import { AuthTokenNotProvidedError } from "../../errors/AuthTokenNotProvidedError";
 import { ok, unauthorized } from "../../helpers/http";
-import { GetAuthenticationTokenInterface } from "@application/interfaces/use-cases/users/IGetAuthenticationTokenInterface";
+import { IGetAuthenticationTokenInterface } from "@application/interfaces/use-cases/users/IGetAuthenticationTokenInterface";
 
 export namespace GetAuthenticationTokenController {
     export type Request = IHttpRequest;
@@ -17,7 +17,7 @@ export namespace GetAuthenticationTokenController {
 
 export class GetAccessTokenController extends BaseController {
     constructor(
-        private readonly getAccessToken: GetAuthenticationTokenInterface
+        private readonly getAccessToken: IGetAuthenticationTokenInterface
     ) {
         super();
     }

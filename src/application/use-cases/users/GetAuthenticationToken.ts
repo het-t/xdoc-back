@@ -2,19 +2,19 @@ import { ForbiddenError } from "@application/errors/ForbiddenError";
 import { InvalidTokenError } from "@application/errors/InvalidTokenError";
 import { JWTGenerator } from "@application/interfaces/cyptography/JWTGenerator";
 import { JWTVerifier } from "@application/interfaces/cyptography/JWTVerifier";
-import { GetTokenRepository } from "@application/interfaces/repositories/tokens/GetTokenRepository";
-import { GetAuthenticationTokenInterface } from "@application/interfaces/use-cases/users/IGetAuthenticationTokenInterface";
+import { IGetTokenRepository } from "@application/interfaces/repositories/tokens/IGetTokenRepository";
+import { IGetAuthenticationTokenInterface } from "@application/interfaces/use-cases/users/IGetAuthenticationTokenInterface";
 
-export class GetAuthenticationToken implements GetAuthenticationTokenInterface {
+export class GetAuthenticationToken implements IGetAuthenticationTokenInterface {
     constructor(
-        private readonly getTokenRepository: GetTokenRepository,
+        private readonly getTokenRepository: IGetTokenRepository,
         private readonly jwtVerifier: JWTVerifier,
         private readonly jwtGenerator: JWTGenerator
     ) {}
 
     async execute(
         token: string
-    ): Promise<GetAuthenticationTokenInterface.Response> {
+    ): Promise<IGetAuthenticationTokenInterface.Response> {
         const storedToken = await this.getTokenRepository.getToken(token);
 
         if (!storedToken) {

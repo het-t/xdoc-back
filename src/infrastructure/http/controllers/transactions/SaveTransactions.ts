@@ -32,7 +32,7 @@ export class SaveTransactionsController extends BaseController {
                 if (!transaction.operations?.length) return badRequest(new Error("Invalid transaction"));
                                 
                 for (let operation of transaction.operations) {
-                    this.handleOperation.execute(operation);
+                    await this.handleOperation.execute(operation);
                 }
             }
         } catch (error: any) {

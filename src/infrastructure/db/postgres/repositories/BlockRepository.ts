@@ -1,28 +1,46 @@
-import { ICreateBlockRepository } from "@application/interfaces/repositories/blocks/ICreateBlockRepository";
-import { ILoadBlockByIdRepository } from "@application/interfaces/repositories/blocks/ILoadBlockByIdRepository";
+import { ILoadBlockByPointerRepository } from "@application/interfaces/repositories/blocks/ILoadBlockByPointerRepository";
 import { pool } from "../helpers/db-connection";
-import { IUpdateBlockByIdRepository } from "@application/interfaces/repositories/blocks/IUpdateBlockByIdRepository";
 
-export class BlockRepository implements
-    ILoadBlockByIdRepository,
-    ICreateBlockRepository,
-    IUpdateBlockByIdRepository
-{
-    async loadBlockById(
-        id: ILoadBlockByIdRepository.Request
-    ): Promise<ILoadBlockByIdRepository.Response> {
-        return null;
+export class BlockRepository implements ILoadBlockByPointerRepository {
+  async loadBlockByPointer(
+    pointer: ILoadBlockByPointerRepository.Request
+  ): Promise<ILoadBlockByPointerRepository.Response> {
+    const filter: {
+      space_id?: string;
+      id: string;
+    } = {
+      id: pointer.id,
+    };
+
+    if (pointer.spaceId) filter.space_id = pointer.spaceId;
+
+    let sp = "";
+    let args = {};
+
+    switch (pointer.table) {
+      case "block": {
+        sp = "select * from block_get_by_id(?);";
+        args = [pointer.id];
+        break;
+      }
+      case "collection": {
+        sp = "select * from collection_get_by_id(?);";
+        args = [pointer.id];
+        break;
+      }
+      case "xdoc_user": {
+        sp = "select * from xdoc_user_get_by_id(?);";
+        args = [pointer.id];
+        break;
+      }
+      case "xdoc_space": {
+        sp = "select * from xdoc_space_get_by_id(?);";
+        args = [pointer.id];
+        console.log(args);
+        break;
+      }
     }
 
-    async createBlock(
-        args: ICreateBlockRepository.Request
-    ): Promise<ICreateBlockRepository.Response> {
-        return null;
-    }
-
-    async updateBlockById(
-        { pointer, args }: IUpdateBlockByIdRepository.Request
-    ): Promise<IUpdateBlockByIdRepository.Response> {
-        return null;
-    }
+    return await pool.raw(sp, args);
+  }
 }
