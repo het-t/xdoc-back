@@ -36,7 +36,11 @@ export class BlockRepository implements ILoadBlockByPointerRepository {
       case "xdoc_space": {
         sp = "select * from xdoc_space_get_by_id(?);";
         args = [pointer.id];
-        console.log(args);
+        break;
+      }
+      case "team": {
+        sp = 'select * from team_get_by_id(?);';
+        args = [pointer.id];
         break;
       }
     }

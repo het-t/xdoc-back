@@ -11,11 +11,11 @@ export class LoadBlockById implements ILoadBlockByPointer {
         { table, spaceId, id }: ILoadBlockByPointer.Request
     ): Promise<ILoadBlockByPointer.Response>
     {
-        const blockOrError = await this.loadBlockByIdRepository.loadBlockByPointer({
+        const blockOrError = (await this.loadBlockByIdRepository.loadBlockByPointer({
             table, 
             spaceId,
             id
-        });
+        })).rows;
 
         if (!blockOrError) {
             return new BlockNotFoundError();

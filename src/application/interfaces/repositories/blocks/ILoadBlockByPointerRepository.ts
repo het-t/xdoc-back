@@ -1,10 +1,12 @@
+import { IDbResponse } from "@application/interfaces/db/IDbResponse";
+
 export namespace ILoadBlockByPointerRepository {
     export type Request = {
         table: string,
         spaceId?: string,
         id: string
     };
-    export type Response = any[];
+    export type Response = IDbResponse;
 }
 
 export interface ILoadBlockByPointerRepository {

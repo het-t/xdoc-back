@@ -10,6 +10,8 @@ import { searchRoutes } from "@main/routes/search-routes";
 import { enqueueRoutes } from "@main/routes/enqueue-routes";
 import { getTasksRoutes } from "@main/routes/get-tasks-routes";
 import { getSpacesRoutes } from "@main/routes/get-spaces-routes";
+import { getTeamsRoutes } from "@main/routes/get-teams-routes";
+import { updateTeamMembersRoutes } from "@main/routes/update-team-members";
 
 export default (app: Express): void => {
     const router = Router();
@@ -25,6 +27,8 @@ export default (app: Express): void => {
     enqueueRoutes(router);
     getTasksRoutes(router);
     getSpacesRoutes(router);
+    getTeamsRoutes(router);
+    updateTeamMembersRoutes(router);
     
     if (env.nodeEnv === "production") {
         // eslint-disable-next-line no-underscore-dangle

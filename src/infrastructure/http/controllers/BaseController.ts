@@ -17,6 +17,7 @@ export abstract class BaseController {
             return await this.execute(httpRequest);
         }
         catch (error: any) {
+            console.log(error);
             return serverError(error);
         }
     }

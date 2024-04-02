@@ -1,7 +1,6 @@
 import { ILoadBlockByPointer } from "@application/interfaces/use-cases/blocks/ILoadBlockByPointer";
 import { BaseController } from "@infrastructure/http/controllers/BaseController";
 import { ok } from "@infrastructure/http/helpers/http";
-import { IDbResponse } from "@infrastructure/http/interfaces/IDbResponse";
 import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 
@@ -42,10 +41,10 @@ export class SyncRecordValuesController extends BaseController {
             if (recordMap[pointer.table] === undefined) recordMap[pointer.table] = {};
                 
             try{
-                const databaseResponse: IDbResponse | Error = await this.loadBlockByPointer.execute(pointer);
+                const databaseResponse: object[] | Error = await this.loadBlockByPointer.execute(pointer);
                 
                 if(!(databaseResponse instanceof Error)) {
-                    databaseResponse.rows.map((recordValue: any) => {
+                    databaseResponse.map((recordValue: any) => {
                         syncRelatedRecordValues(recordPointers, pointer.table, recordValue);
 
                         recordMap[pointer.table][pointer.id] = {
