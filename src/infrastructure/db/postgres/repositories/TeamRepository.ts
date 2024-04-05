@@ -26,7 +26,7 @@ export class TeamRepository implements
 
     async removeTeamMembers({ spaceId, teamId, existingMembersOrGuestsToRemove }: IRemoveTeamMembersRepository.Request): Promise<IRemoveTeamMembersRepository.Response> {
         const sp = "call team_member_remove(?, ?, ?)";
-        const args = [teamId, spaceId, existingMembersOrGuestsToRemove];
+        const args = [teamId, spaceId, JSON.stringify(existingMembersOrGuestsToRemove)];
 
         return await pool.raw(sp, args);
     }

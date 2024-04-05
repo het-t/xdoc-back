@@ -1,50 +1,43 @@
-import { ILoadBlockByPointerRepository } from "@application/interfaces/repositories/blocks/ILoadBlockByPointerRepository";
+import { ILoadBlocksByPointersRepository } from "@application/interfaces/repositories/blocks/ILoadBlocksByPointersRepository";
 import { pool } from "../helpers/db-connection";
 
-export class BlockRepository implements ILoadBlockByPointerRepository {
-  async loadBlockByPointer(
-    pointer: ILoadBlockByPointerRepository.Request
-  ): Promise<ILoadBlockByPointerRepository.Response> {
-    const filter: {
-      space_id?: string;
-      id: string;
-    } = {
-      id: pointer.id,
-    };
-
-    if (pointer.spaceId) filter.space_id = pointer.spaceId;
-
+export class BlockRepository implements ILoadBlocksByPointersRepository {
+  async loadBlocksByPointers(
+    { table, ids, spaceId }: ILoadBlocksByPointersRepository.Request
+  ): Promise<ILoadBlocksByPointersRepository.Response> {
     let sp = "";
-    let args = {};
 
-    switch (pointer.table) {
+    switch (table) {
       case "block": {
-        sp = "select * from block_get_by_id(?);";
-        args = [pointer.id];
+        sp = "select * from blocks_get_by_ids(?, ?);";
         break;
       }
       case "collection": {
-        sp = "select * from collection_get_by_id(?);";
-        args = [pointer.id];
+        sp = "select * from collections_get_by_ids(?, ?);";
         break;
       }
-      case "xdoc_user": {
-        sp = "select * from xdoc_user_get_by_id(?);";
-        args = [pointer.id];
-        break;
-      }
+      // case "xdoc_user": {
+      //   sp = "select * from xdoc_user_get_by_id(?, ?);";
+      //   break;
+      // }
       case "xdoc_space": {
-        sp = "select * from xdoc_space_get_by_id(?);";
-        args = [pointer.id];
-        break;
+        sp = "select * from xdoc_spaces_get_by_ids(?);";
+        return await pool.raw(
+          sp,
+          [ids]
+        )
       }
-      case "team": {
-        sp = 'select * from team_get_by_id(?);';
-        args = [pointer.id];
-        break;
+      default: {
+        return new Error("INVALID TABLE: " + table);
       }
+      // case "team": {
+      //   sp = 'select * from team_get_by_id(?, ?);';
+      //   break;
+      // }
     }
-
-    return await pool.raw(sp, args);
+    return await pool.raw(sp, [
+      ids, 
+      spaceId
+    ]);
   }
 }

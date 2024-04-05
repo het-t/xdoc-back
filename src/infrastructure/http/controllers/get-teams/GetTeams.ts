@@ -3,7 +3,7 @@ import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { IGetJoinedTeamsByUserId } from "@application/interfaces/use-cases/teams/IGetJoinedTeamsByUserId";
 import { ok } from "@infrastructure/http/helpers/http";
-import { ILoadBlockByPointer } from "@application/interfaces/use-cases/blocks/ILoadBlockByPointer";
+import { ILoadBlockByPointer } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
 
 export namespace GetTeamsController {
     export type Request = IHttpRequest;

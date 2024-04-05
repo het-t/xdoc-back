@@ -1,4 +1,4 @@
-import { ILoadBlockByPointer } from "@application/interfaces/use-cases/blocks/ILoadBlockByPointer";
+import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
 import { BaseController } from "@infrastructure/http/controllers/BaseController";
 import { ok } from "@infrastructure/http/helpers/http";
 import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
@@ -17,7 +17,7 @@ export namespace SyncRecordValuesController {
 
 export class SyncRecordValuesController extends BaseController {
     constructor(
-        private readonly loadBlockByPointer: ILoadBlockByPointer
+        private readonly loadBlocksByPointers: ILoadBlocksByPointers
     ) {
         super();
     }
@@ -27,42 +27,20 @@ export class SyncRecordValuesController extends BaseController {
     ): Promise<SyncRecordValuesController.Response> {
         const requests = httpRequest.body.requests;
 
-        const recordMap: Record<string, any> = {};
-
-        const recordPointers: IPointer[] = [];
+        const requestedPointers: Set<IPointer> = new Set();
 
         requests.map((request: { pointer: IPointer }) => {
-            recordPointers.push(request.pointer);
+            requestedPointers.add(request.pointer);
         });
 
-        let i=0;
-        while(i < recordPointers.length) {
-            const pointer = recordPointers[i];
-            if (recordMap[pointer.table] === undefined) recordMap[pointer.table] = {};
-                
-            try{
-                const databaseResponse: object[] | Error = await this.loadBlockByPointer.execute(pointer);
-                
-                if(!(databaseResponse instanceof Error)) {
-                    databaseResponse.map((recordValue: any) => {
-                        syncRelatedRecordValues(recordPointers, pointer.table, recordValue);
+        const responseRecordValues = await this.loadBlocksByPointers.execute({
+            pointers: Array.from(requestedPointers),
+            spaceId: "f2cf1fd1-8789-4ddd-9190-49f41966c446"
+        });
 
-                        recordMap[pointer.table][pointer.id] = {
-                            value: {
-                                value: recordValue,
-                                role: "editor"
-                            }
-                        };
-                    });
-                }
-            } 
-            catch(err) {
-                console.log(err);
-            }
-
-            i++;
-        }
-
+        return ok({
+            recordMap: responseRecordValues
+        });
         // recordPointers.map(async (pointer: IPointer) => {    
             
         //     if (pointer.id === "!ad3a2c35-a9c8-4d99-8182-051fc8964207") {
@@ -790,86 +768,5 @@ export class SyncRecordValuesController extends BaseController {
         //     //     }
         //     // }
         // });
-
-        return ok({
-            recordMap
-        });
     }
-}
-
-function syncRelatedRecordValues(queue: IPointer[], table: string, recordValue: any) {
-    switch(table) {
-        case "block": {            
-            pushPointerIfNotPresent(queue, {
-                id: recordValue.space_id,
-                table: "xdoc_space"
-            });
-            
-            if(recordValue.parent_table !== 'xdoc_space') {
-                pushPointerIfNotPresent(queue, {
-                    table: recordValue.parent_table,
-                    id: recordValue.parent_id,
-                    spaceId: recordValue.space_id
-                });
-            }
-
-
-            recordValue?.content?.map((blockId: string) => {
-                pushPointerIfNotPresent(queue, {
-                    id: blockId,
-                    table: "block",
-                    spaceId: recordValue.space_id
-                });
-            });
-
-            recordValue?.view_ids?.map((viewId: string) => {
-                pushPointerIfNotPresent(queue, {
-                    id: viewId,
-                    table: "collection_view",
-                    spaceId: recordValue.space_id
-                });
-            });
-
-            pushPointerIfNotPresent(queue, {
-                id: recordValue.collection_id,
-                table: "collection",
-                spaceId: recordValue.space_id
-            });
-        }
-        case "space_view": {
-            pushPointerIfNotPresent(queue, {
-                table: "xdoc_space",
-                id: recordValue.space_id
-            });
-
-
-            pushPointerIfNotPresent(queue, {
-                table: recordValue.parent_table,
-                id: recordValue.parent_id,
-                spaceId: recordValue.space_id
-            });
-
-            recordValue?.visited_templates?.map((id: string) => {
-                pushPointerIfNotPresent(queue, {
-                    table: "block",
-                    id,
-                    spaceId: recordValue.space_id
-                });
-            });
-
-            recordValue?.private_pages?.map((id: string) => {
-                pushPointerIfNotPresent(queue, {
-                    table: "block",
-                    id,
-                    spaceId: recordValue.space_id
-                });
-            });
-        }
-    }
-}
-
-function pushPointerIfNotPresent(queue: IPointer[], pointer: IPointer) {
-    if(queue.findIndex((o) => o.id === pointer.id) === -1) {
-        queue.push(pointer);
-    } 
 }

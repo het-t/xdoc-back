@@ -10,8 +10,7 @@ export class HandleOperation implements IHandleOperation {
 
     async execute(
         operation: IHandleOperation.Request
-    ): Promise<IHandleOperation.Response> {
-
+    ): Promise<IHandleOperation.Response> {        
         switch(operation.command) {
             case "set": 
                 await this.setOperationRepository.setOperation(operation);
@@ -21,6 +20,10 @@ export class HandleOperation implements IHandleOperation {
                 await this.updateOperatinRepository.updateOperation(operation);
                 break;
             
+            case "listBefore":
+                console.log("list before");
+                break;
+
             default:
                 console.log(operation);
         }

@@ -28,7 +28,7 @@ export class SaveTransactionsController extends BaseController {
         if (!transactions?.length) return badRequest(new Error("Invalid request"));
 
         try {
-            for (let transaction of transactions) {                
+            for (let transaction of transactions) { 
                 if (!transaction.operations?.length) return badRequest(new Error("Invalid transaction"));
                                 
                 for (let operation of transaction.operations) {

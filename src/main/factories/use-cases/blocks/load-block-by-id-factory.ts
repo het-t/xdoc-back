@@ -1,8 +1,8 @@
-import { LoadBlockById } from "@application/use-cases/blocks/LoadBlockById";
+import { LoadBlocksByPointers } from "@application/use-cases/blocks/LoadBlocksByPointers";
 import { BlockRepository } from "@infrastructure/db/postgres/repositories/BlockRepository";
 
-export const makeLoadBlockById = (): LoadBlockById => {
+export const makeLoadBlockById = (): LoadBlocksByPointers => {
     const blockRepository = new BlockRepository();
 
-    return new LoadBlockById(blockRepository);
+    return new LoadBlocksByPointers(blockRepository);
 }
