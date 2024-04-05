@@ -27,6 +27,10 @@ export class BlockRepository implements ILoadBlocksByPointersRepository {
           [ids]
         )
       }
+      case "collection_view": {
+        sp = "select * from collection_views_get_by_ids(?, ?);"
+        break;
+      }
       default: {
         return new Error("INVALID TABLE: " + table);
       }

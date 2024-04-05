@@ -96,15 +96,15 @@ function syncRelatedRecordValues(pointers: IPointer[], allresponsedPointerIds: S
 
     //views
     if(recordValue?.view_ids?.length) {
-        pointers.push(
-            ...[recordValue.view_ids.map((id: string) => {
-                return {
+        recordValue.view_ids.map((id: string) => {
+            if(!allresponsedPointerIds.has(id)) {
+                pointers.push({
                     id,
                     table: "collection_view",
                     spaceId: recordValue.space_id
-                }
-            })].filter(pointer => allresponsedPointerIds.has(pointer.id) === false)
-        );
+                })
+            }
+        });
     }
 
     //collection
