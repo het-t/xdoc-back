@@ -1,49 +1,17 @@
+import { IDbResponse } from "@application/interfaces/db/IDbResponse";
+
 export namespace ICollectionQueryRepository {
     export type Request = {
-        collectionView: {
-            id: string,
-            spaceId: string
-        },
-        source: {
-            type: string,
-            id: string,
-            spaceId: string
-        },
-        loader: {
-            reducers: {
-                collection_group_results ?: {
-                    type: string,
-                    limit: number
-                }
-            },
-            sort: Array<string>,
-            searchQuery: string,
-            userId: string,
-            userTimeZone: string
-        }
+        collectionId: string,
+        spaceId: string
     };
-    export type Response = {
-        result: {
-            type: string,
-            reducerResults: {
-                collection_group_results: {
-                    type: string,
-                    blockIds: Array<string>,
-                    hasMore: boolean
-                }
-            },
-            sizeHint: number
-        },
-        recordMap: Record<string, any>,
-        collectionIds: Array<string>,
-        allBlockIds: Array<string>
-    };
+    export type Response = IDbResponse;
 }
 
 export interface ICollectionQueryRepository {
     queryCollection(
         {
-            collectionView, source, loader
+            collectionId, spaceId
         }: ICollectionQueryRepository.Request
     ): Promise<ICollectionQueryRepository.Response>
 }

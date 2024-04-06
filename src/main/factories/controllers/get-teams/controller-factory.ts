@@ -1,11 +1,11 @@
 import { BaseController } from "@infrastructure/http/controllers/BaseController";
 import { GetTeamsController } from "@infrastructure/http/controllers/get-teams/GetTeams";
-import { makeLoadBlockById } from "@main/factories/use-cases/blocks/load-block-by-id-factory";
+import { makeLoadBlocksByPointers } from "@main/factories/use-cases/blocks/load-blocks-by-pointers";
 import { makeGetTeams } from "@main/factories/use-cases/teams/get-teams-factory";
 
 export const makeGetTeamsController = (): BaseController => {
     const getTeamsUsecase = makeGetTeams();
-    const loadBlockByPointer = makeLoadBlockById();
+    const loadBlockByPointer = makeLoadBlocksByPointers();
 
     return new GetTeamsController(
         getTeamsUsecase, 

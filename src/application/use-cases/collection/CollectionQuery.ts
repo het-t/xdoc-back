@@ -6,11 +6,30 @@ export class CollectionQuery implements ICollectionQuery {
         private readonly collectionQueryRepository: ICollectionQueryRepository
     ) {}
 
-    async execute({ collectionView, source, loader }: ICollectionQuery.Request): Promise<ICollectionQuery.Response> {
-        return await this.collectionQueryRepository.queryCollection({
-            collectionView,
-            source,
-            loader
-        })
+    async execute(
+        { source, loader }: ICollectionQuery.Request
+    ): Promise<ICollectionQuery.Response> {
+        const dbResponse = await this.collectionQueryRepository.queryCollection({
+            collectionId: source.id,
+            spaceId: source.spaceId
+        });
+
+        if(dbResponse instanceof Error) {
+            throw Error(dbResponse.toString());
+        }
+
+        return {
+            type: "reducers",
+            reducerResults: {
+                collection_group_results: {
+                    type: "results",
+                    blockIds: dbResponse.rows.map(({id}: {id: string}) => {
+                        return id;
+                    }),
+                    hasMore: dbResponse.rowCount === loader.reducers.collection_group_results?.limit
+                }
+            }
+        }
+
     }
 }

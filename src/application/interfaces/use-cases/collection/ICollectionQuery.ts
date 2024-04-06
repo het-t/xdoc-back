@@ -2,10 +2,6 @@ import { UseCase } from "../UseCase";
 
 export namespace ICollectionQuery {
     export type Request = {
-        collectionView: {
-            id: string,
-            spaceId: string
-        },
         source: {
             type: string,
             id: string,
@@ -18,27 +14,18 @@ export namespace ICollectionQuery {
                     limit: number
                 }
             },
-            sort: Array<string>,
-            searchQuery: string,
-            userId: string,
-            userTimeZone: string
+            userId: string
         }
     };
     export type Response = {
-        result: {
-            type: string,
-            reducerResults: {
-                collection_group_results: {
-                    type: string,
-                    blockIds: Array<string>,
-                    hasMore: boolean
-                }
-            },
-            sizeHint: number
-        },
-        recordMap: Record<string, any>,
-        collectionIds: Array<string>,
-        allBlockIds: Array<string>
+        type: string,
+        reducerResults?: {
+            collection_group_results?: {
+                type: "results",
+                blockIds: string[],
+                hasMore: boolean
+            }
+        }
     };
 }
 
@@ -47,6 +34,6 @@ export interface ICollectionQuery extends UseCase<
     ICollectionQuery.Response
 > {
     execute(
-        { collectionView, source, loader }: ICollectionQuery.Request
+        { source, loader }: ICollectionQuery.Request
     ): Promise<ICollectionQuery.Response>
 }
