@@ -17,9 +17,35 @@ export class OperationRepository implements
         if(o.pointer.id) filter.id = o.pointer.id;
         if(o.pointer.spaceId) filter.space_id = o.pointer.spaceId;
 
-        return await pool(o.pointer.table)
-        .where(filter)
-        .insert(o.args);
+        let query = pool(o.pointer.table);
+
+        if(o.path.length === 0) {
+            query = query.insert(o.args);
+        }
+        else if (o.path.length === 1) {
+            Object.keys(o.args).forEach(key => {
+                query = query.update({
+                    [o.path[0]]: pool.jsonSet(
+                        o.path[0],
+                        key,
+                        JSON.stringify(o.args[key])
+                    )
+                });
+            });
+        }
+        else {
+            const updateTargetPath = '$.' + o.path.slice(1).join('.');       
+
+            query = query.update({
+                [o.path[0]]: pool.jsonSet(
+                    o.path[0],
+                    updateTargetPath,
+                    JSON.stringify(o.args)
+                )
+            });
+        }
+
+        return await query;
     }
 
     async updateOperation(
@@ -33,36 +59,34 @@ export class OperationRepository implements
         if(o.pointer.id) filter.id = o.pointer.id;
         if(o.pointer.spaceId) filter.space_id = o.pointer.spaceId;
 
-        let updateQuery: any;
+        let query = pool(o.pointer.table)
+        .where(filter);
 
-        if(o.path.length >= 0) {
-            updateQuery = pool(o.pointer.table)
-            .where(filter)
-            .update(
-                o.path.length < 2 ?
-                o.args :
-                {
-                    [o.path[0]]: (
-                        pool.raw(
-                            `jsonb_set(to_jsonb(??), cast(? as text[]), ?::jsonb)`,
-                            [
-                                o.path[0],
-                                o.path.slice(1),
-                                JSON.stringify(o.args)
-                            ]
-                        )
+        if(o.path.length === 0) {
+            query = query.update(o.args);
+        }
+        else if (o.path.length === 1) {
+            Object.keys(o.args).forEach(key => {
+                query = query.update({
+                    [o.path[0]]: pool.jsonSet(
+                        o.path[0],
+                        key,
+                        JSON.stringify(o.args[key])
                     )
-                }
-            )
-            .returning("*");
+                });
+            });
         }
         else {
-            
+            const updateTargetPath = '$.' + o.path.slice(1).join('.');
+
+            query = query.update({
+                [o.path[0]]: pool.jsonSet(
+                    o.path[0],
+                    updateTargetPath,
+                    o.args
+                )
+            });
         }
-
-        const { sql, bindings } = updateQuery.toSQL();
-
-        const updatedRecord = await updateQuery;
-        return {};
+        return await query;
     }
 }

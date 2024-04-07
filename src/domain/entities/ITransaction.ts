@@ -10,7 +10,7 @@ export type IOperation = {
     additionalPointers: IPointer, 
     path: string[],
     command: string,
-    args: object
+    args: Record<string, any>
 }
 
 export type IPointer = {

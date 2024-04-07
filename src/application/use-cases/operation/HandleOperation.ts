@@ -5,7 +5,7 @@ import { IHandleOperation } from "@application/interfaces/use-cases/handle-opera
 export class HandleOperation implements IHandleOperation {
     constructor(
         public readonly setOperationRepository: ISetOperationRepository,
-        public readonly updateOperatinRepository: IUpdateOperationRepository
+        public readonly updateOperationRepository: IUpdateOperationRepository
     ) {}
 
     async execute(
@@ -17,7 +17,7 @@ export class HandleOperation implements IHandleOperation {
                 break;
 
             case "update":
-                await this.updateOperatinRepository.updateOperation(operation);
+                await this.updateOperationRepository.updateOperation(operation);
                 break;
             
             case "listBefore":

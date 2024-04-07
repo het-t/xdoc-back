@@ -43,6 +43,7 @@ export class SaveTransactionsController extends BaseController {
                 return badRequest(error);
             }
             else {
+                console.log(error);
                 return badRequest(new Error("unknown error encountered"))
             }
         }
