@@ -7,7 +7,7 @@ export type ITransaction = {
 
 export type IOperation = {
     pointer: IPointer,
-    additionalPointers: IPointer, 
+    additionalPointers?: IPointer, 
     path: string[],
     command: string,
     args: Record<string, any>

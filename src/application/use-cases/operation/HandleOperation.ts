@@ -1,11 +1,17 @@
+import { IKeyedObjectListBeforeRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListBeforeRepository";
+import { IKeyedObjectListRemoveRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListRemoveRepository";
+import { IKeyedObjectListUpdateRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListUpdateRepository";
 import { ISetOperationRepository } from "@application/interfaces/repositories/operations/ISetOperationRepository";
 import { IUpdateOperationRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
 import { IHandleOperation } from "@application/interfaces/use-cases/handle-operation/IHandleOperation";
 
 export class HandleOperation implements IHandleOperation {
     constructor(
-        public readonly setOperationRepository: ISetOperationRepository,
-        public readonly updateOperationRepository: IUpdateOperationRepository
+        private readonly setOperationRepository: ISetOperationRepository,
+        private readonly updateOperationRepository: IUpdateOperationRepository,
+        private readonly keyedObjectListBeforeRepository: IKeyedObjectListBeforeRepository,
+        private readonly keyedObjectListUpdateRepository: IKeyedObjectListUpdateRepository,
+        private readonly keyedObjectListRemoveRepository: IKeyedObjectListRemoveRepository
     ) {}
 
     async execute(
@@ -20,6 +26,18 @@ export class HandleOperation implements IHandleOperation {
                 await this.updateOperationRepository.updateOperation(operation);
                 break;
             
+            case "keyedObjectListBefore":
+                await this.keyedObjectListBeforeRepository.keyedObjectListBeforeOperation(operation);
+                break;
+
+            case "keyedObjectListUpdate":
+                await this.keyedObjectListUpdateRepository.keyedObjectListUpdateOperation(operation);
+                break;
+
+            case "keyedObjectListRemove":
+                await this.keyedObjectListRemoveRepository.keyedObjectListRemoveOperation(operation);
+                break;
+
             case "listBefore":
                 console.log("list before");
                 break;

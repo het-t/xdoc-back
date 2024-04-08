@@ -1,10 +1,17 @@
 import { ISetOperationRepository } from "@application/interfaces/repositories/operations/ISetOperationRepository";
 import { IUpdateOperationRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
 import { pool } from "../helpers/db-connection";
+import { IKeyedObjectListBeforeRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListBeforeRepository";
+import { IKeyedObjectListUpdateRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListUpdateRepository";
+import { IKeyedObjectListRemoveRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListRemoveRepository";
+import { IPointer } from "@domain/entities/ITransaction";
 
 export class OperationRepository implements 
     ISetOperationRepository,
-    IUpdateOperationRepository
+    IUpdateOperationRepository,
+    IKeyedObjectListBeforeRepository,
+    IKeyedObjectListUpdateRepository,
+    IKeyedObjectListRemoveRepository
 {
     async setOperation(
         o: ISetOperationRepository.Request
@@ -83,10 +90,121 @@ export class OperationRepository implements
                 [o.path[0]]: pool.jsonSet(
                     o.path[0],
                     updateTargetPath,
-                    o.args
+                    JSON.stringify(o.args)
                 )
             });
         }
         return await query;
+    }
+
+    async keyedObjectListUpdateOperation(
+        {pointer, path, args}: IKeyedObjectListUpdateRepository.Request
+    ): Promise<IKeyedObjectListUpdateRepository.Response> {
+        const targetNode = await this.getTargetIndexNode(
+            pointer,
+            path
+        );
+
+        let targetIndex = 0;
+        if(args?.id) {
+            targetIndex = targetNode.findIndex(({id}: {id: string}) => id === args.id);
+        }
+
+        const updatedTargetNodeValue = [];
+
+        if(targetIndex !== 0) {
+            updatedTargetNodeValue.push(...targetNode.slice(0, targetIndex))
+        }
+
+        updatedTargetNodeValue.push({
+            ...targetNode[targetIndex],
+            ...args
+        });
+
+        if(targetIndex !== targetNode.length) {
+            updatedTargetNodeValue.push(...targetNode.slice(targetIndex+1));
+        }
+
+        this.setOperation({
+            args: updatedTargetNodeValue,
+            path,
+            pointer,
+            command: "set"
+        });
+    }
+
+    async keyedObjectListRemoveOperation(
+        {pointer, args, path}: IKeyedObjectListRemoveRepository.Request
+    ): Promise<IKeyedObjectListRemoveRepository.Response> {
+        const targetNode = await this.getTargetIndexNode(
+            pointer,
+            path,
+        );
+
+        let targetIndex = 0;
+        if(args?.remove?.id) {
+            targetIndex = targetNode.findIndex(({id}: {id: string}) => id === args.remove.id)
+        }
+
+        const updatedTargetNodeValue = [
+            ...targetNode.slice(0, targetIndex),
+            ...targetNode.slice(targetIndex+1)
+        ];
+
+        this.setOperation({
+            args: updatedTargetNodeValue,
+            path,
+            pointer,
+            command: "set"
+        });
+    }   
+
+    async keyedObjectListBeforeOperation(
+        { pointer, path, args }: IKeyedObjectListBeforeRepository.Request
+    ): Promise<IKeyedObjectListBeforeRepository.Response> {
+        const targetNode = await this.getTargetIndexNode(
+            pointer,
+            path
+        );
+
+        let targetIndex = 0;
+        if(args?.before?.id) {
+            targetIndex = targetNode.findIndex(({id}: {id: string}) => id === args.before.id);
+        }
+
+        const updatedTargetNodeValue = [
+            ...targetNode.slice(0, targetIndex),
+            args.value,
+            ...targetNode.slice(targetIndex)
+        ];
+
+        this.setOperation({
+            args: updatedTargetNodeValue,
+            path,
+            pointer,
+            command: "set"
+        });
+    }
+
+    async getTargetIndexNode(
+        pointer: IPointer,
+        path: string[],
+    ) {
+        let filter: { id: string, space_id?: string } = {
+            id: pointer.id
+        };
+        if(pointer.spaceId) filter.space_id = pointer.spaceId;
+
+        const targetRecord = await pool(pointer.table)
+        .where(filter)
+        .first();
+
+        let targetNode: Record<string, any> = targetRecord;
+
+        path.forEach(_path => {
+            targetNode = targetNode[_path];
+        })
+
+        return targetNode;
     }
 }

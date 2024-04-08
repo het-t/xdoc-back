@@ -6,6 +6,9 @@ export const makeHandleOperation = (): HandleOperation => {
 
     return new HandleOperation(
         operationRepository,
+        operationRepository,
+        operationRepository,
+        operationRepository,
         operationRepository
     );
 }
