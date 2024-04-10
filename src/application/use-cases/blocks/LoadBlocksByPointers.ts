@@ -1,7 +1,6 @@
 import { ILoadBlocksByPointersRepository } from "@application/interfaces/repositories/blocks/ILoadBlocksByPointersRepository";
 import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
 import { IPointer } from "@domain/entities/ITransaction";
-import { table } from "console";
 
 const tables = ["block", "collection", "collection_view", "xdoc_space"];
 
@@ -19,9 +18,9 @@ export class LoadBlocksByPointers implements ILoadBlocksByPointers {
         const allRequestedPointerIds: Set<string> = new Set(pointers.map(pointer => pointer.id));
         const allRespondedPointerIds: Set<string> = new Set();
 
-        pointers = pointers.filter((pointer) => tables.indexOf(pointer.table) !== -1);
-
         while(pointers.length > 0) {
+            pointers = pointers.filter((pointer) => tables.indexOf(pointer.table) !== -1);
+
             await Promise.all(
                 tables.map(async table => { 
                     const pointersToTable = pointers.filter((pointer) => pointer.table === table);
@@ -39,6 +38,7 @@ export class LoadBlocksByPointers implements ILoadBlocksByPointers {
                         ids: pointerIds,
                         spaceId
                     });
+
 
                     if (!(dbResponse instanceof Error)) {
                         if(!recordValuesMap[table] && dbResponse.rows.length) recordValuesMap[table] = {};

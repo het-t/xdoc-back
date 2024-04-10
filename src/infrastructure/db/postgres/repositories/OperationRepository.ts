@@ -27,12 +27,6 @@ export class OperationRepository implements
         let query = pool(o.pointer.table);
 
         if(o.path.length === 0) {
-
-            await this.prepareArgsForInsert(
-                ["type"],
-                o.args
-            );
-            
             query = query.insert(o.args);
         }
         else if (o.path.length === 1) {
@@ -212,71 +206,5 @@ export class OperationRepository implements
         })
 
         return targetNode;
-    }
-
-    private async getReferenceRecordId({table, value}: {
-        table: string,
-        value: Record<string, any>
-    }) {
-        const referenceRecord = await pool(table)
-        .select("id")
-        .where(value)
-        .first();
-
-        return referenceRecord?.id ? referenceRecord.id : new Error("No reference record found on table: " + table + " value: " + value);
-    }
-
-    private async prepareArgsForInsert(properties: string[], args: Record<string, any>) {
-        return Promise.all(
-            properties.map(async (property) => {
-                switch(property) {
-                    case "type":
-                        const typeIdOrError = await this.getReferenceRecordId({
-                            table: "block_type",
-                            value: {
-                                type: args.type
-                            }
-                        });
-                        if(typeIdOrError instanceof Error) return typeIdOrError;
-    
-                        delete args["type"];
-                        args["type_id"] = typeIdOrError;
-    
-                        console.log(args);
-    
-                        break;
-                    
-                    case "created_by_table":
-                        const createdByTableIdOrError = await this.getReferenceRecordId({
-                            table: "xdoc_table",
-                            value: {
-                                table: args.created_by_table
-                            }
-                        });
-                        
-                        if(createdByTableIdOrError instanceof Error) return createdByTableIdOrError;
-    
-                        delete args["created_by_table"];
-                        args["created_by_table_id"] = createdByTableIdOrError;
-    
-                        break;
-                    
-                    case "last_edited_by_table":
-                        const lastEditedByTableIdOrError = await this.getReferenceRecordId({
-                            table: "xdoc_table",
-                            value: {
-                                table: args.last_edited_by_table
-                            }
-                        });
-                        
-                        if(lastEditedByTableIdOrError instanceof Error) return lastEditedByTableIdOrError;
-    
-                        delete args["last_edited_by_table"];
-                        args["last_edited_by_table_id"] = lastEditedByTableIdOrError;
-    
-                        break;
-                }
-            })
-        )
     }
 }
