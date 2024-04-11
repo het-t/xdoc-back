@@ -1,12 +1,12 @@
 import { IOperation } from "@domain/entities/ITransaction";
 
-export namespace IUpdateOperationRepository {
+export namespace IUpdateRepository {
     export type Request = IOperation;
     export type Response = object;
 }
 
-export interface IUpdateOperationRepository {
+export interface IUpdateRepository {
     updateOperation(
-        o: IUpdateOperationRepository.Request
-    ): Promise<IUpdateOperationRepository.Response>;
+        o: IUpdateRepository.Request
+    ): Promise<IUpdateRepository.Response>;
 }

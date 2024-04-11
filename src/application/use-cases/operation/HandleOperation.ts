@@ -1,17 +1,19 @@
 import { IKeyedObjectListBeforeRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListBeforeRepository";
 import { IKeyedObjectListRemoveRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListRemoveRepository";
 import { IKeyedObjectListUpdateRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListUpdateRepository";
-import { ISetOperationRepository } from "@application/interfaces/repositories/operations/ISetOperationRepository";
-import { IUpdateOperationRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
+import { ISetRepository } from "@application/interfaces/repositories/operations/ISetRepository";
+import { ISetParentRepository } from "@application/interfaces/repositories/operations/ISetParentRepository";
+import { IUpdateRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
 import { IHandleOperation } from "@application/interfaces/use-cases/handle-operation/IHandleOperation";
 
 export class HandleOperation implements IHandleOperation {
     constructor(
-        private readonly setOperationRepository: ISetOperationRepository,
-        private readonly updateOperationRepository: IUpdateOperationRepository,
+        private readonly setRepository: ISetRepository,
+        private readonly updateRepository: IUpdateRepository,
         private readonly keyedObjectListBeforeRepository: IKeyedObjectListBeforeRepository,
         private readonly keyedObjectListUpdateRepository: IKeyedObjectListUpdateRepository,
-        private readonly keyedObjectListRemoveRepository: IKeyedObjectListRemoveRepository
+        private readonly keyedObjectListRemoveRepository: IKeyedObjectListRemoveRepository,
+        private readonly setParentRepository: ISetParentRepository
     ) {}
 
     async execute(
@@ -19,11 +21,15 @@ export class HandleOperation implements IHandleOperation {
     ): Promise<IHandleOperation.Response> {        
         switch(operation.command) {
             case "set": 
-                await this.setOperationRepository.setOperation(operation);
+                await this.setRepository.setOperation(operation);
                 break;
 
             case "update":
-                await this.updateOperationRepository.updateOperation(operation);
+                await this.updateRepository.updateOperation(operation);
+                break;
+            
+            case "setParent":
+                await this.setParentRepository.setParentOperation(operation);
                 break;
             
             case "keyedObjectListBefore":

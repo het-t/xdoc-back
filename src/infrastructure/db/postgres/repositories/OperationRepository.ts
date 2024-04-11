@@ -1,21 +1,23 @@
-import { ISetOperationRepository } from "@application/interfaces/repositories/operations/ISetOperationRepository";
-import { IUpdateOperationRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
+import { ISetRepository } from "@application/interfaces/repositories/operations/ISetRepository";
+import { IUpdateRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
 import { pool } from "../helpers/db-connection";
 import { IKeyedObjectListBeforeRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListBeforeRepository";
 import { IKeyedObjectListUpdateRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListUpdateRepository";
 import { IKeyedObjectListRemoveRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListRemoveRepository";
 import { IPointer } from "@domain/entities/ITransaction";
+import { ISetParentRepository } from "@application/interfaces/repositories/operations/ISetParentRepository";
 
 export class OperationRepository implements 
-    ISetOperationRepository,
-    IUpdateOperationRepository,
+    ISetRepository,
+    IUpdateRepository,
     IKeyedObjectListBeforeRepository,
     IKeyedObjectListUpdateRepository,
-    IKeyedObjectListRemoveRepository
+    IKeyedObjectListRemoveRepository,
+    ISetParentRepository
 {
     async setOperation(
-        o: ISetOperationRepository.Request
-    ): Promise<ISetOperationRepository.Response> {
+        o: ISetRepository.Request
+    ): Promise<ISetRepository.Response> {
         const filter: {
             id?: string,
             space_id?: string
@@ -35,7 +37,7 @@ export class OperationRepository implements
                     [o.path[0]]: pool.jsonSet(
                         o.path[0],
                         key,
-                        JSON.stringify(o.args[key])
+                        o.args[key]
                     )
                 });
             });
@@ -47,7 +49,7 @@ export class OperationRepository implements
                 [o.path[0]]: pool.jsonSet(
                     o.path[0],
                     updateTargetPath,
-                    JSON.stringify(o.args)
+                    o.args
                 )
             });
         }
@@ -56,8 +58,8 @@ export class OperationRepository implements
     }
 
     async updateOperation(
-        o: IUpdateOperationRepository.Request
-    ): Promise<IUpdateOperationRepository.Response> {  
+        o: IUpdateRepository.Request
+    ): Promise<IUpdateRepository.Response> {  
         const filter: {
             id?: string,
             space_id?: string
@@ -95,6 +97,27 @@ export class OperationRepository implements
             });
         }
         return await query;
+    }
+
+    async setParentOperation(
+        { pointer, args }: ISetParentRepository.Request
+    ): Promise<ISetParentRepository.Response> {
+        const filter: {
+            id?: string,
+            space_id?: string
+        } = {};
+
+        if(pointer.id) filter.id = pointer.id;
+        if(pointer.spaceId) filter.space_id = pointer.spaceId;
+
+        const query = pool(pointer.table)
+        .where(filter)
+        .update({
+            parent_id: args.parentId,
+            parent_table: args.parentTable
+        });
+
+        return void(await query);
     }
 
     async keyedObjectListUpdateOperation(
