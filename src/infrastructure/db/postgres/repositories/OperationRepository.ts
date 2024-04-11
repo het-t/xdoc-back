@@ -79,10 +79,10 @@ export class OperationRepository implements
                 query = query.update({
                     [o.path[0]]: pool.jsonSet(
                         o.path[0],
-                        key,
+                        '$.'+ key,
                         JSON.stringify(o.args[key])
                     )
-                });
+                })
             });
         }
         else {
