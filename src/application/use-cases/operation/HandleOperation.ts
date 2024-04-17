@@ -5,6 +5,7 @@ import { ISetRepository } from "@application/interfaces/repositories/operations/
 import { ISetParentRepository } from "@application/interfaces/repositories/operations/ISetParentRepository";
 import { IUpdateRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
 import { IHandleOperation } from "@application/interfaces/use-cases/handle-operation/IHandleOperation";
+import { IAddRelationAfterRepository } from "@application/interfaces/repositories/operations/IAddRelationAfterRepository";
 
 export class HandleOperation implements IHandleOperation {
     constructor(
@@ -13,7 +14,8 @@ export class HandleOperation implements IHandleOperation {
         private readonly keyedObjectListBeforeRepository: IKeyedObjectListBeforeRepository,
         private readonly keyedObjectListUpdateRepository: IKeyedObjectListUpdateRepository,
         private readonly keyedObjectListRemoveRepository: IKeyedObjectListRemoveRepository,
-        private readonly setParentRepository: ISetParentRepository
+        private readonly setParentRepository: ISetParentRepository,
+        private readonly addRelationAfterRepository: IAddRelationAfterRepository
     ) {}
 
     async execute(
@@ -42,6 +44,10 @@ export class HandleOperation implements IHandleOperation {
 
             case "keyedObjectListRemove":
                 await this.keyedObjectListRemoveRepository.keyedObjectListRemoveOperation(operation);
+                break;
+
+            case "addRelationAfter":
+                await this.addRelationAfterRepository.addRelationAfterOperation(operation);
                 break;
 
             case "listBefore":

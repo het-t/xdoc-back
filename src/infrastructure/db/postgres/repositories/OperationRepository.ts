@@ -1,11 +1,13 @@
+import { pool } from "../helpers/db-connection";
+import { IPointer } from "@domain/entities/ITransaction";
 import { ISetRepository } from "@application/interfaces/repositories/operations/ISetRepository";
 import { IUpdateRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
-import { pool } from "../helpers/db-connection";
+import { ISetParentRepository } from "@application/interfaces/repositories/operations/ISetParentRepository";
 import { IKeyedObjectListBeforeRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListBeforeRepository";
 import { IKeyedObjectListUpdateRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListUpdateRepository";
 import { IKeyedObjectListRemoveRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListRemoveRepository";
-import { IPointer } from "@domain/entities/ITransaction";
-import { ISetParentRepository } from "@application/interfaces/repositories/operations/ISetParentRepository";
+import { IAddRelationAfterRepository } from "@application/interfaces/repositories/operations/IAddRelationAfterRepository";
+import { resourceLimits } from "worker_threads";
 
 export class OperationRepository implements 
     ISetRepository,
@@ -13,7 +15,8 @@ export class OperationRepository implements
     IKeyedObjectListBeforeRepository,
     IKeyedObjectListUpdateRepository,
     IKeyedObjectListRemoveRepository,
-    ISetParentRepository
+    ISetParentRepository,
+    IAddRelationAfterRepository
 {
     async setOperation(
         o: ISetRepository.Request
@@ -209,6 +212,44 @@ export class OperationRepository implements
         });
     }
 
+    async addRelationAfterOperation(
+        { pointer, path, args }: IAddRelationAfterRepository.Request
+    ): Promise<IAddRelationAfterRepository.Response> {
+        const targetNode: any[] = await this.getTargetIndexNode(pointer, path);
+        const newRelationValue = [
+            '‣',
+            [[
+                'p',
+                args.id,
+                args.spaceId
+            ]]
+        ];
+
+        let updatedTargetNodeValue = [];
+
+        if(targetNode?.length > 0) {
+            updatedTargetNodeValue = [
+                ...targetNode,
+                [','], 
+                newRelationValue
+            ];
+        }
+        else {
+            updatedTargetNodeValue = [
+                newRelationValue
+            ];
+        }
+
+        this.updateOperation({
+            pointer,
+            args: updatedTargetNodeValue,
+            path,
+            command: "update"
+        });
+        
+        return;
+    }
+
     private async getTargetIndexNode(
         pointer: IPointer,
         path: string[],
@@ -228,6 +269,6 @@ export class OperationRepository implements
             targetNode = targetNode[_path];
         })
 
-        return targetNode;
+        return targetNode as any;
     }
 }
