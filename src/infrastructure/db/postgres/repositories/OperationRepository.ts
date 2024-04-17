@@ -36,25 +36,38 @@ export class OperationRepository implements
         }
         else if (o.path.length === 1) {
             Object.keys(o.args).forEach(key => {
+                const _args = (typeof o.args[key] !== "string" 
+                    ? JSON.stringify(o.args[key])
+                    : o.args[key]
+                );
                 query = query.update({
                     [o.path[0]]: pool.jsonSet(
                         o.path[0],
                         key,
-                        o.args[key]
+                        _args
                     )
                 });
             });
+            
+            query = query.where(filter);
         }
         else {
             const updateTargetPath = '$.' + o.path.slice(1).join('.');       
-
+        
+            const _args = (typeof o.args !== "string" 
+                ? JSON.stringify(o.args)
+                : o.args
+            );
+            
             query = query.update({
                 [o.path[0]]: pool.jsonSet(
                     o.path[0],
                     updateTargetPath,
-                    o.args
+                    _args
                 )
             });
+
+            query = query.where(filter);
         }
 
         return await query;
