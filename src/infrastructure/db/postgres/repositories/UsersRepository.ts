@@ -18,12 +18,13 @@ export class UserRepository implements
         });
     }
 
-    async loadUserByEmail(
+    loadUserByEmail(
         email: ILoadUserByEmailRepository.Request
     ): Promise<ILoadUserByEmailRepository.Response> {
         return pool.select('*')
             .from("xdoc_user")
             .where(`email`, email)
+            .where('alive', true)
             .limit(1);
     }
 }

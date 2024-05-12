@@ -1,5 +1,4 @@
 import env from "@config/env";
-import { Pool } from "pg";
 import { knex } from "knex";
 
 export const pool = knex({

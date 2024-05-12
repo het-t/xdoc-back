@@ -16,6 +16,13 @@ import { updateTeamMembersRoutes } from "@main/routes/update-team-members";
 export default (app: Express): void => {
     const router = Router();
 
+    const __dirname = path.resolve('./');
+    
+    if(env.nodeEnv === "production") {
+        const staticPath = path.join(__dirname, 'x_dist');
+        app.use(express.static(staticPath));
+    }
+ 
     app.use('/api/v1', router);
     
     saveTransactionsRoutes(router);
@@ -29,17 +36,13 @@ export default (app: Express): void => {
     getSpacesRoutes(router);
     getTeamsRoutes(router);
     updateTeamMembersRoutes(router);
-    
+
     if (env.nodeEnv === "production") {
         // eslint-disable-next-line no-underscore-dangle
-        const __dirname = path.resolve('../');
-        const staticPath = path.join(__dirname, 'notion-browser-client/build');
-        app.use(express.static(staticPath));
-
         app.get('*', (req, res) => {
             res.type('html');
             res.sendFile(
-                path.resolve(__dirname, 'notion-browser-client', 'build', 'index.html')
+                path.resolve(__dirname, 'x_dist', 'index.html')
             );
         });
     } else {

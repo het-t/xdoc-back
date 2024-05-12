@@ -5,6 +5,12 @@ import { Express } from "express";
 
 export default (app: Express): void => {
     app.use(bodyParser);
-    app.use(cors({ origin: 'http://localhost:8081', credentials: true }))
+    app.use(cors({ 
+        origins: [
+            'http://113.212.87.157:9090',
+            'http://localhost:8080'
+        ],       
+        credentials: true 
+    }));
     app.use(contentType);
 }
