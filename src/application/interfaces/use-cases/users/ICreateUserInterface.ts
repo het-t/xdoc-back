@@ -1,9 +1,13 @@
 import { EmailAlredyInUseError } from "@application/errors/EmailAlreadyInUseError";
 import { UseCase } from "../UseCase";
-import { IUser } from "@domain/entities/IUser";
 
 export namespace ICreateUserInterface {
-    export type Request = Omit<IUser, "alive">;
+    export type Request = {
+        id: string,
+        email: string,
+        name?: string,
+        password: string
+    };
     export type Response = void | EmailAlredyInUseError;
 }
 

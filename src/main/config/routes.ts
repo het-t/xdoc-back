@@ -12,6 +12,8 @@ import { getTasksRoutes } from "@main/routes/get-tasks-routes";
 import { getSpacesRoutes } from "@main/routes/get-spaces-routes";
 import { getTeamsRoutes } from "@main/routes/get-teams-routes";
 import { updateTeamMembersRoutes } from "@main/routes/update-team-members";
+import { findUserRoutes } from "@main/routes/find-user-routes";
+import { createEmailuserRoutes } from "@main/routes/create-email-user";
 
 export default (app: Express): void => {
     const router = Router();
@@ -36,7 +38,9 @@ export default (app: Express): void => {
     getSpacesRoutes(router);
     getTeamsRoutes(router);
     updateTeamMembersRoutes(router);
-
+    findUserRoutes(router);
+    createEmailuserRoutes(router);
+    
     if (env.nodeEnv === "production") {
         // eslint-disable-next-line no-underscore-dangle
         app.get('*', (req, res) => {

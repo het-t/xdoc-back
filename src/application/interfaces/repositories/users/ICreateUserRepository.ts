@@ -1,12 +1,15 @@
-import { IUser } from "@domain/entities/IUser";
-
 export namespace ICreateUserRepository {
-    export type Request = Omit<IUser, "alive">;
+    export type Request = {
+        id: string,
+        name?: string,
+        email: string,
+        password: string
+    };
     export type Response = void;
 }
 
 export interface ICreateUserRepository {
     createUser(
-        userData: ICreateUserRepository.Request
+        {id, name, email, password}: ICreateUserRepository.Request
     ): Promise<ICreateUserRepository.Response>
 }

@@ -9,7 +9,6 @@ export const makeCreateUser = (): CreateUser => {
     
     return new CreateUser(
         hashGenerator, 
-        userRepository, 
         userRepository
     );
 }
