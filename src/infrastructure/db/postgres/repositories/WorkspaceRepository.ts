@@ -3,11 +3,15 @@ import { ILoadWorkspaceByIdRepository } from "@application/interfaces/repositori
 import { pool } from "../helpers/db-connection";
 import { Workspace } from "@domain/entities/workspace";
 import { IGetSpacesRepository } from "@application/interfaces/repositories/spaces/IGetSpacesRepository";
+import { IRemoveUsersByIdsRepository } from "@application/interfaces/repositories/spaces/IRemoveUsersByIdsRepository";
+import { IRemovePagePermissionsRepository } from "@application/interfaces/repositories/spaces/IRemovePagePermissionsRepository";
 
 export class WorkspaceRepository implements
     ICreateWorkspaceRepository,
     ILoadWorkspaceByIdRepository,
-    IGetSpacesRepository
+    IGetSpacesRepository,
+    IRemoveUsersByIdsRepository,
+    IRemovePagePermissionsRepository
 {
     async loadWorkspaceById(id: string): Promise<Workspace> {
         return null;
@@ -21,5 +25,26 @@ export class WorkspaceRepository implements
 
     async getSpaces({ userId }: IGetSpacesRepository.Request): Promise<object> {
         return {};
+    }
+
+    async removeUsersByIds(
+        {
+            userIds, 
+            spaceId
+        }: IRemoveUsersByIdsRepository.Request
+    ): Promise<void> {
+        return await pool.raw(
+            "call space_user_remove_by_user_ids(?, ?::uuid)", 
+            [
+                userIds,
+                spaceId
+            ]
+        );
+    }
+
+    removePagePermissions(
+        { userIds, spaceId }: IRemovePagePermissionsRepository.Request
+    ): Promise<IRemovePagePermissionsRepository.Response> {
+        return Promise.resolve();
     }
 }

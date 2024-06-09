@@ -2,7 +2,7 @@ import { ILoadBlocksByPointersRepository } from "@application/interfaces/reposit
 import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
 import { IPointer } from "@domain/entities/ITransaction";
 
-const tables = ["block", "collection", "collection_view", "xdoc_space"];
+const tables = ["block", "collection", "collection_view", "xdoc_space", "space_user", "xdoc_user"];
 
 export class LoadBlocksByPointers implements ILoadBlocksByPointers {
     constructor(

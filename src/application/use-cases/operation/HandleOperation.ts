@@ -6,6 +6,7 @@ import { ISetParentRepository } from "@application/interfaces/repositories/opera
 import { IUpdateRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
 import { IHandleOperation } from "@application/interfaces/use-cases/handle-operation/IHandleOperation";
 import { IAddRelationAfterRepository } from "@application/interfaces/repositories/operations/IAddRelationAfterRepository";
+import { ISetPermissionItemRepository } from "@application/interfaces/repositories/operations/ISetPermissionItemRepository";
 
 export class HandleOperation implements IHandleOperation {
     constructor(
@@ -15,7 +16,8 @@ export class HandleOperation implements IHandleOperation {
         private readonly keyedObjectListUpdateRepository: IKeyedObjectListUpdateRepository,
         private readonly keyedObjectListRemoveRepository: IKeyedObjectListRemoveRepository,
         private readonly setParentRepository: ISetParentRepository,
-        private readonly addRelationAfterRepository: IAddRelationAfterRepository
+        private readonly addRelationAfterRepository: IAddRelationAfterRepository,
+        private readonly setPermissionItemRepositoryl: ISetPermissionItemRepository
     ) {}
 
     async execute(
@@ -52,6 +54,10 @@ export class HandleOperation implements IHandleOperation {
 
             case "listBefore":
                 console.log("list before");
+                break;
+
+            case "setPermissionItem":
+                await this.setPermissionItemRepositoryl.setPermissionItem(operation);
                 break;
 
             default:

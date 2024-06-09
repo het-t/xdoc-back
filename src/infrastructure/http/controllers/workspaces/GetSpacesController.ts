@@ -32,8 +32,7 @@ export class GetSpacesController extends BaseController {
                         "version": 414,
                         "space_id": "f2cf1fd1-8789-4ddd-9190-49f41966c446",
                         "bookmarked_pages": [
-                            "ad3a2c35-a9c8-4d99-8182-051fc8964pg2",
-                            "47238a83-fb69-4d72-ba7c-9d491d20fpg2",
+                           "ad3a2c35-a9c8-4d99-8182-051fc8964207"
                         ],
                         "parent_id": "ca5f99c6-879b-4562-bd41-6651fc8d2099",
                         "parent_table": "user_root",
@@ -72,7 +71,7 @@ export class GetSpacesController extends BaseController {
                         "created_getting_started": true,
                         "created_onboarding_templates": true,
                         "private_pages": [
-                            "ad3a2c35-a9c8-4d99-8182-051fc8964pg2",
+                            "ad3a2c35-a9c8-4d99-8182-051fc8964992",
                             "47238a83-fb69-4d72-ba7c-9d491d20fpg2",
                             "47238a83-fb69-4d72-ba7c-9d491d20f6be",
                             "ad3a2c35-a9c8-4d99-8182-051fc8964207"

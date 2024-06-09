@@ -7,7 +7,7 @@ import { IKeyedObjectListBeforeRepository } from "@application/interfaces/reposi
 import { IKeyedObjectListUpdateRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListUpdateRepository";
 import { IKeyedObjectListRemoveRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListRemoveRepository";
 import { IAddRelationAfterRepository } from "@application/interfaces/repositories/operations/IAddRelationAfterRepository";
-import { resourceLimits } from "worker_threads";
+import { ISetPermissionItemRepository } from "@application/interfaces/repositories/operations/ISetPermissionItemRepository";
 
 export class OperationRepository implements 
     ISetRepository,
@@ -16,7 +16,8 @@ export class OperationRepository implements
     IKeyedObjectListUpdateRepository,
     IKeyedObjectListRemoveRepository,
     ISetParentRepository,
-    IAddRelationAfterRepository
+    IAddRelationAfterRepository,
+    ISetPermissionItemRepository
 {
     async setOperation(
         o: ISetRepository.Request
@@ -88,7 +89,13 @@ export class OperationRepository implements
         .where(filter);
 
         if(o.path.length === 0) {
-            query = query.update(o.args);
+            query = pool(o.pointer.table)
+            .insert({
+                id: filter.id,
+                ...o.args
+            })
+            .onConflict("id")
+            .merge();
         }
         else if (o.path.length === 1) {
             Object.keys(o.args).forEach(key => {
@@ -136,8 +143,28 @@ export class OperationRepository implements
         return void(await query);
     }
 
+    async setPermissionItem(
+        { pointer, path, args }: ISetPermissionItemRepository.Request
+    ): Promise<ISetPermissionItemRepository.Response> {
+        const filter: {
+            id?: string,
+            space_id?: string
+        } = {};
+
+        if(pointer.id) filter.id = pointer.id;
+        if(pointer.spaceId) filter.space_id = pointer.spaceId;
+
+        const query = pool(pointer.table)
+        .where(filter)
+        .update({
+            [path[0]]: pool.raw(`${path[0]} || '${JSON.stringify(args)}'::jsonb`)
+        });
+
+        return void(await query);
+    }
+
     async keyedObjectListUpdateOperation(
-        {pointer, path, args}: IKeyedObjectListUpdateRepository.Request
+        { pointer, path, args }: IKeyedObjectListUpdateRepository.Request
     ): Promise<IKeyedObjectListUpdateRepository.Response> {
         const targetNode = await this.getTargetIndexNode(
             pointer,

@@ -9,7 +9,7 @@ export namespace ILoadUserByEmail {
 export interface ILoadUserByEmail extends UseCase<
     ILoadUserByEmail.Request,
     ILoadUserByEmail.Response
->{  
+> {  
     execute(
         email: ILoadUserByEmail.Request
     ): Promise<ILoadUserByEmail.Response>;
