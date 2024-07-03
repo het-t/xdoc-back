@@ -401,12 +401,12 @@ export class SyncRecordValuesController extends BaseController {
         //         }
         //     }
         //     //second collection
-        //     else if (pointer.id === "ad3a2c35-a9c8-4d99-8182-051fc8964pg2") {
+        //     else if (pointer.id === "ad3a2c35-a9c8-4d99-8182-051fc8964992") {
         //         recordMap["block"][pointer.id] = {
         //             "spaceId": "f2cf1fd1-8789-4ddd-9190-49f41966c446",
         //             "value": {
         //                 "value": {
-        //                     "id": "ad3a2c35-a9c8-4d99-8182-051fc8964pg2",
+        //                     "id": "ad3a2c35-a9c8-4d99-8182-051fc8964992",
         //                     "version": 26,
         //                     "type": "collection_view_page",
         //                     "view_ids": [
@@ -477,7 +477,7 @@ export class SyncRecordValuesController extends BaseController {
         //                             "spaceId": "f2cf1fd1-8789-4ddd-9190-49f41966c446"
         //                         }
         //                     },
-        //                     "parent_id": "ad3a2c35-a9c8-4d99-8182-051fc8964pg2",
+        //                     "parent_id": "ad3a2c35-a9c8-4d99-8182-051fc8964992",
         //                     "parent_table": "block",
         //                     "alive": true,
         //                     "page_sort": [
@@ -567,7 +567,7 @@ export class SyncRecordValuesController extends BaseController {
         //                             }
         //                         ]
         //                     },
-        //                     "parent_id": "ad3a2c35-a9c8-4d99-8182-051fc8964pg2",
+        //                     "parent_id": "ad3a2c35-a9c8-4d99-8182-051fc8964992",
         //                     "parent_table": "block",
         //                     "alive": true,
         //                     "template_pages": [

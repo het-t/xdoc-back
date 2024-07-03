@@ -71,10 +71,8 @@ export class GetSpacesController extends BaseController {
                         "created_getting_started": true,
                         "created_onboarding_templates": true,
                         "private_pages": [
-                            "ad3a2c35-a9c8-4d99-8182-051fc8964992",
-                            "47238a83-fb69-4d72-ba7c-9d491d20fpg2",
-                            "47238a83-fb69-4d72-ba7c-9d491d20f6be",
-                            "ad3a2c35-a9c8-4d99-8182-051fc8964207"
+                            "ad3a2c35-a9c8-4d99-8182-051fc8964207",
+                            "12499191-69c5-4a5b-88cf-7dbd5e43203f"
                         ],
                         "joined": true,
                         "joined_teams": [
