@@ -36,7 +36,13 @@ export class GetTeamsController extends BaseController {
         const teamsRecordValue: Record<string, object> = {};
 
         teams.forEach(team => {
-            teamsRecordValue[team.id] = team;
+            teamsRecordValue[team.id] = {
+                spaceId,
+                value: {
+                    value: team,
+                    role: "editor"
+                }
+            };
         });
 
         return ok({
