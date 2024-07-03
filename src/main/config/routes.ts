@@ -16,6 +16,7 @@ import { findUserRoutes } from "@main/routes/find-user-routes";
 import { createEmailuserRoutes } from "@main/routes/create-email-user";
 import { removeUsersFromSpaceRoutes } from "@main/routes/remove-users-from-space";
 import { getVisibleUsersRoutes } from "@main/routes/get-visible-users-routes";
+import { createTeamRoutes } from "@main/routes/create-team-routes";
 
 export default (app: Express): void => {
     const router = Router();
@@ -44,6 +45,7 @@ export default (app: Express): void => {
     createEmailuserRoutes(router);
     removeUsersFromSpaceRoutes(router);
     getVisibleUsersRoutes(router);
+    createTeamRoutes(router);
     
     if (env.nodeEnv === "production") {
         // eslint-disable-next-line no-underscore-dangle
