@@ -14,10 +14,11 @@ export class UpdateTeamMembers implements IUpdateTeamMembers {
             teamId, 
             newMembersOrGuestsToAdd, 
             existingMembersOrGuestsToRemove, 
-            isSettingDefaultTeam
+            isSettingDefaultTeam,
+            addNewMembersToSpace
         }: IUpdateTeamMembers.Request
     ): Promise<IUpdateTeamMembers.Response> {
-        if(newMembersOrGuestsToAdd?.length) {
+        if(addNewMembersToSpace && newMembersOrGuestsToAdd?.length) {
             return await this.addTeamMembersRepository.addTeamMembers({
                 spaceId,
                 teamId,
