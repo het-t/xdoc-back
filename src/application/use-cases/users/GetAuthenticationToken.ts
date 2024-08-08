@@ -21,7 +21,7 @@ export class GetAuthenticationToken implements IGetAuthenticationTokenInterface 
             return new InvalidTokenError();
         }
 
-        const decodedToken = await this.jwtVerifier.verifyRefreshToken(token);
+        const decodedToken = this.jwtVerifier.verifyRefreshToken(token);
 
         if (!decodedToken) {
             return new ForbiddenError();

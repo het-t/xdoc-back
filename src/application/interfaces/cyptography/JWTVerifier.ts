@@ -1,4 +1,4 @@
 export interface JWTVerifier {
-    verifyAccessToken(jwt: string): Promise<string | null>;
-    verifyRefreshToken(jwt: string): Promise<string | null>;
+    verifyAccessToken(jwt: string): string | object;
+    verifyRefreshToken(jwt: string): string | object;
 }

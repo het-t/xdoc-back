@@ -3,7 +3,7 @@ import { ForbiddenError } from "@application/errors/ForbiddenError";
 
 export namespace IAuthenticateInterface {
     export type Request = string;
-    export type Response = string | ForbiddenError;
+    export type Response = string | object | ForbiddenError;
 }
 
 export interface IAuthenticateInterface extends UseCase<

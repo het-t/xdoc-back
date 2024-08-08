@@ -1,8 +1,8 @@
-import { BaseController } from "@infrastructure/http/controllers/BaseController"
+import { BaseController } from "@infrastructure/http/controllers/BaseController";
 import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest"
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-export const expressRouteAdapter = (controller: BaseController) => async (req: Request, res: Response) => {
+export const expressRouteMiddlewareAdapter = (controller: BaseController) => async (req: Request, res: Response, next: NextFunction) => {
     const httpRequest: IHttpRequest = {
         body: req.body,
         params: req.params,
@@ -12,7 +12,7 @@ export const expressRouteAdapter = (controller: BaseController) => async (req: R
     const httpResponse = await controller.handle(httpRequest);
 
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {
-        res.status(httpResponse.statusCode).json(httpResponse.body);
+        next();
     } else {
         res.status(httpResponse.statusCode).json({
             error: httpResponse.body?.message

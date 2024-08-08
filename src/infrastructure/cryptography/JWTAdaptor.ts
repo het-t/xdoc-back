@@ -21,19 +21,11 @@ export class JWTAdaptor implements
         return jwt.sign({ userId: payload }, this.refreshTokenSecret);
     }
 
-    async verifyAccessToken(token: string): Promise<string> {
-        try {
-            return jwt.verify(token, this.authenticationTokenSecret) as string
-        } catch (error) {
-            return "null";
-        }
+    verifyAccessToken(token: string): string | object {
+        return jwt.verify(token, this.authenticationTokenSecret)
     }
 
-    async verifyRefreshToken(token: string): Promise<string> {
-        try {
-            return jwt.verify(token, this.refreshTokenSecret) as string
-        } catch (error) {
-            return "null";
-        }
+    verifyRefreshToken(token: string): string | object {
+        return jwt.verify(token, this.refreshTokenSecret)
     }
 }

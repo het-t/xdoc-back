@@ -33,7 +33,10 @@ export class SignInController extends BaseController {
             password
         });
 
-        if (authenticationOrError instanceof InvalidPasswordError || authenticationOrError instanceof InvalidUserError) {
+        if (
+            authenticationOrError instanceof InvalidPasswordError 
+            || authenticationOrError instanceof InvalidUserError
+        ) {
             return unauthorized(authenticationOrError);
         }
 
@@ -46,7 +49,7 @@ export class SignInController extends BaseController {
                     xdoc_user: [ user ]
                 }
              },
-            { token: refreshToken }
+            { token: authenticationToken }
         )
     }
 }

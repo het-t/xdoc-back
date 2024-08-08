@@ -7,7 +7,7 @@ export const expressRouteSetCookieAdapter = (controller: BaseController) => asyn
         body: req.body,
         params: req.params,
         headers: req.headers
-    }
+    };
 
     const userId = "express-route-adapter-user-id";
     const workspaceId = "express-route-adapter-workspace-id";
@@ -21,6 +21,7 @@ export const expressRouteSetCookieAdapter = (controller: BaseController) => asyn
             sameSite: 'strict',
             path: '/',
             httpOnly: true,
+            secure: true,
             expires: new Date(new Date().getTime() + 86400000)
         })
         .json(httpResponse.body)

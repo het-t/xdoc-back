@@ -1,11 +1,12 @@
-import { Authenticate } from "@application/use-cases/users/Authentication";
-import { IAuthenticateInterface } from "@application/interfaces/use-cases/users/IAuthenticateInterface"
-import { JWTAdaptor } from "@infrastructure/cryptography/JWTAdaptor";
+import { Authenticate } from "@application/use-cases/users/Authenticate";
 import env from "@config/env";
+import { JWTAdaptor } from "@infrastructure/cryptography/JWTAdaptor";
 
-export const makeAuthenticate = (): IAuthenticateInterface => {
-    const jwtVerifier = new JWTAdaptor(env.authenticationTokenSecret, env.refreshTokenSecret);
-    const authentication = new Authenticate(jwtVerifier);
+export const makeAuthenticate = (): Authenticate => {
 
-    return authentication;
+    const jwtVerifier = new JWTAdaptor(
+        env.authenticationTokenSecret, 
+        env.refreshTokenSecret
+    );
+    return new Authenticate(jwtVerifier);
 }
