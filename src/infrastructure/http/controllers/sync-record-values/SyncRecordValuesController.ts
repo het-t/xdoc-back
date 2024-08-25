@@ -1,6 +1,6 @@
 import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
 import { BaseController } from "@infrastructure/http/controllers/BaseController";
-import { ok } from "@infrastructure/http/helpers/http";
+import { forbidden, ok, unauthorized } from "@infrastructure/http/helpers/http";
 import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 
@@ -23,7 +23,8 @@ export class SyncRecordValuesController extends BaseController {
     }
 
     async execute(
-        httpRequest: SyncRecordValuesController.Request
+        httpRequest: SyncRecordValuesController.Request,
+        { locals }: IHttpResponse
     ): Promise<SyncRecordValuesController.Response> {
         const requests = httpRequest.body.requests;
 
@@ -33,9 +34,11 @@ export class SyncRecordValuesController extends BaseController {
             requestedPointers.add(request.pointer);
         });
 
+        if(!locals?.userId) return unauthorized(new Error(""));
+
         const responseRecordValues = await this.loadBlocksByPointers.execute({
             pointers: Array.from(requestedPointers),
-            spaceId: "f2cf1fd1-8789-4ddd-9190-49f41966c446"
+            userId: locals.userId
         });
 
         return ok({

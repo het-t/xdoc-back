@@ -1,4 +1,5 @@
 import { ILoadBlocksByPointersRepository } from "@application/interfaces/repositories/blocks/ILoadBlocksByPointersRepository";
+import { IGetBlockPermissionsByIds } from "@application/interfaces/use-cases/blocks/IGetBlockPermissionsByIds";
 import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
 import { IPointer } from "@domain/entities/ITransaction";
 
@@ -6,22 +7,23 @@ const tables = ["block", "collection", "collection_view", "xdoc_space", "space_u
 
 export class LoadBlocksByPointers implements ILoadBlocksByPointers {
     constructor(
-        private readonly loadBlocksByPointersRepository: ILoadBlocksByPointersRepository
+        private readonly loadBlocksByPointersRepository: ILoadBlocksByPointersRepository,
+        private readonly getBlockPermissionsByIds: IGetBlockPermissionsByIds
     ) { }
     
     async execute(
-        { pointers, spaceId }: ILoadBlocksByPointers.Request
+        { pointers, userId }: ILoadBlocksByPointers.Request
     ): Promise<ILoadBlocksByPointers.Response>
     {        
-        const recordValuesMap: Record<string, any> = {};
-
         const allRequestedPointerIds: Set<string> = new Set(pointers.map(pointer => pointer.id));
         const allRespondedPointerIds: Set<string> = new Set();
+
+        const recordValuesMap: Record<string, any> = {};
 
         while(pointers.length > 0) {
             pointers = pointers.filter((pointer) => tables.indexOf(pointer.table) !== -1);
 
-            await Promise.all(
+            await Promise.allSettled(
                 tables.map(async table => { 
                     const pointersToTable = pointers.filter((pointer) => pointer.table === table);
                     pointers = pointers.filter((pointer) => pointer.table !== table);
@@ -29,21 +31,67 @@ export class LoadBlocksByPointers implements ILoadBlocksByPointers {
                     const pointerIds = pointersToTable.map(pointer => pointer.id)
                     .filter(id => allRespondedPointerIds.has(id) === false);
                     
+                    if(!pointerIds.length) return Promise.reject("no blocks requested for table " + table);
+                    
                     pointerIds.forEach(id => {
                         allRespondedPointerIds.add(id);
                     });
 
-                    const dbResponse = await this.loadBlocksByPointersRepository.loadBlocksByPointers({
-                        table,
+
+                    const effectivePermissions = await this.getBlockPermissionsByIds.execute({
                         ids: pointerIds,
-                        spaceId
+                        userId
                     });
 
+                    if(!effectivePermissions.length) return Promise.reject("user lacks required permissions " + table);
+
+                    const spaceId = effectivePermissions[0].space_id;
+
+                    const mapRecordIdsRoles: Record<string, Role> = {};
+
+                    effectivePermissions.map(({
+                        id, 
+                        space_id: spaceId,
+                        effective_parent_table: effectiveParentTable,
+                        team_permissions: teamPermissions, 
+                        is_team_default: isTeamDefault,
+                        team_settings: teamSettings,
+                        team_memberships: teamMemberships, 
+                        space_role: spaceRole, 
+                        space_settings: spaceSettings,
+                        block_overriden_permissions: overridenPermissions
+                    }) => {
+                        if(effectiveParentTable === "xdoc_space") mapRecordIdsRoles[id] = spaceRole;
+                        else {
+                            const teamRight = extractTeamPermission(
+                                teamPermissions, 
+                                teamMemberships, 
+                                userId,
+                                isTeamDefault,
+                                spaceRole !== null
+                            );
+                            
+                            if(!teamRight) mapRecordIdsRoles[id] = "none";
+                            else if(teamSettings.disable_team_page_edits) mapRecordIdsRoles[id] = "reader";
+                            else mapRecordIdsRoles[id] = teamRight;
+                        }
+                    });
+
+                    const accessibleRecords = pointerIds.filter((id) => mapRecordIdsRoles[id] !== 'none');
+
+                    if(!accessibleRecords.length) return Promise.reject("user have no access to requested records");
+
+                    const dbResponse = await this.loadBlocksByPointersRepository.loadBlocksByPointers({
+                        table,
+                        ids: accessibleRecords
+                    });
 
                     if (!(dbResponse instanceof Error)) {
                         if(!recordValuesMap[table] && dbResponse.rows.length) recordValuesMap[table] = {};
 
                         dbResponse.rows.forEach((recordValue: any) => {
+                            syncRelatedRecordValues(pointers, allRespondedPointerIds, recordValue, table);
+
                             recordValuesMap[table][recordValue.id] = {
                                 value: {
                                     value: recordValue,
@@ -51,9 +99,18 @@ export class LoadBlocksByPointers implements ILoadBlocksByPointers {
                                 },
                                 spaceId
                             };
-                            syncRelatedRecordValues(pointers, allRespondedPointerIds, recordValue, table);
                         });
                     }
+                    
+
+                    pointerIds.filter(id => mapRecordIdsRoles[id] === 'none')
+                    .map((id) => {
+                        recordValuesMap[table][id] = {
+                            value: {
+                                role: "none"
+                            }
+                        }
+                    });
                 })
             );
         }
@@ -137,4 +194,54 @@ function syncRelatedRecordValues(pointers: IPointer[], allresponsedPointerIds: S
             })
         });
     }
+}
+
+type TeamRole = 'member' 
+    | 'owner';
+
+type Role = 'editor' 
+    | 'comment_only'
+    | 'reader'
+    | 'none';
+
+type TeamPermissionType = "explicit_team_permission" 
+    | "explicit_team_owner_permission" 
+    | "space_permission";
+
+interface TeamPermission {
+    role: Role;
+    type: TeamPermissionType;
+    team_id: string;
+};
+
+interface TeamMemberships {
+    type: TeamRole;
+    user_id: string;
+    entity_type: "user";
+};
+
+function extractTeamPermission(
+    teamPermissions: TeamPermission[], 
+    teamMemberships: TeamMemberships[], 
+    userId: string,
+    isTeamDefault: boolean,
+    inSpace: boolean
+) {
+    const userTeamRole = teamMemberships.find((membership) => membership.user_id === userId)?.type;
+
+    let teamPermission: TeamPermissionType | undefined = (
+        userTeamRole === 'member' || isTeamDefault 
+        ? "explicit_team_permission"
+        : (
+            userTeamRole === "owner" 
+            ? "explicit_team_owner_permission"
+            : undefined
+        )
+    ); 
+
+    if(!teamPermission && inSpace) teamPermission = "space_permission";
+
+    return teamPermission && teamPermissions.find(permission => {
+        return permission.type === teamPermission; 
+    })?.role;
 }

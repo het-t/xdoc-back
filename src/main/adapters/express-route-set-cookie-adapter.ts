@@ -9,10 +9,7 @@ export const expressRouteSetCookieAdapter = (controller: BaseController) => asyn
         headers: req.headers
     };
 
-    const userId = "express-route-adapter-user-id";
-    const workspaceId = "express-route-adapter-workspace-id";
-
-    const httpResponse = await controller.handle(httpRequest);
+    const httpResponse = await controller.handle(httpRequest, res);
     const refreshToken = httpResponse.headers?.token;
 
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {

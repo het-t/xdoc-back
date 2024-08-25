@@ -1,9 +1,9 @@
-import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { ICollectionQuery } from "@application/interfaces/use-cases/collection/ICollectionQuery";
 import { ok } from "@infrastructure/http/helpers/http";
 import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
+import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 
 export namespace QueryCollectionController {
     export type Request = IHttpRequest;
@@ -19,8 +19,9 @@ export class QueryCollectionController extends BaseController {
     }
     
     async execute(
-        httpRequest: IHttpRequest
-    ): Promise<IHttpResponse> {
+        httpRequest: QueryCollectionController.Request,
+        { locals }: Record<string, any>
+    ): Promise<QueryCollectionController.Response> {
         const { source, loader } = httpRequest.body;
 
         const result = await this.queryCollection.execute({
@@ -42,7 +43,7 @@ export class QueryCollectionController extends BaseController {
         if(collectionRecordsPointers) {
             recordMap = await this.loadBlocksByPointers.execute({
                 pointers: collectionRecordsPointers,
-                spaceId: source.spaceId
+                userId: locals.userId
             });
         }
 

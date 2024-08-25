@@ -1,20 +1,24 @@
 import { ILoadBlocksByPointersRepository } from "@application/interfaces/repositories/blocks/ILoadBlocksByPointersRepository";
 import { pool } from "../helpers/db-connection";
+import { IGetBlockPermissionsByIdsRepository } from "@application/interfaces/repositories/blocks/IGetBlockPermissionsByIdsRepository";
 
-export class BlockRepository implements ILoadBlocksByPointersRepository {
+export class BlockRepository implements 
+  ILoadBlocksByPointersRepository,
+  IGetBlockPermissionsByIdsRepository
+{
   async loadBlocksByPointers(
-    { table, ids, spaceId }: ILoadBlocksByPointersRepository.Request
+    { table, ids }: ILoadBlocksByPointersRepository.Request
   ): Promise<ILoadBlocksByPointersRepository.Response> {
     let sp = "";
 
     switch (table) {
       case "block": {
-        sp = "select * from blocks_get_by_ids(?::uuid[], ?::uuid);";
+        sp = "select * from blocks_get_by_ids(?::uuid[]);";
         break;
       }
 
       case "collection": {
-        sp = "select * from collections_get_by_ids(?, ?);";
+        sp = "select * from collections_get_by_ids(?::uuid[]);";
         break;
       }
 
@@ -27,12 +31,12 @@ export class BlockRepository implements ILoadBlocksByPointersRepository {
       }
 
       case "collection_view": {
-        sp = "select * from collection_views_get_by_ids(?, ?);"
+        sp = "select * from collection_views_get_by_ids(?::uuid[]);"
         break;
       }
 
       case "space_user": {
-        sp = "select * from space_user_get_by_ids(?::text[], ?::uuid);"
+        sp = "select * from space_user_get_by_ids(?::uuid[]);"
         break;
       }
 
@@ -50,8 +54,16 @@ export class BlockRepository implements ILoadBlocksByPointersRepository {
     }
     
     return await pool.raw(sp, [
-      ids, 
-      spaceId
+      ids
     ]);
+  }
+
+  async getBlockPermissionsByIds(
+    { ids, userId }: IGetBlockPermissionsByIdsRepository.Request
+  ): Promise<IGetBlockPermissionsByIdsRepository.Response> {
+    return await pool.raw(
+      "select * from block_get_permissions_memberships(?, ?);",
+      [ids, userId]
+    );
   }
 }

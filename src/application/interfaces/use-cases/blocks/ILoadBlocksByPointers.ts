@@ -5,7 +5,7 @@ import { IPointer } from "@domain/entities/ITransaction";
 export namespace ILoadBlocksByPointers {
     export type Request = {
         pointers: IPointer[],
-        spaceId: string
+        userId: string
     };
     export type Response = Record<string, Array<object | BlockNotFoundError>>;
 }
@@ -16,5 +16,5 @@ export interface ILoadBlocksByPointers extends UseCase<
 > {
     execute(
         pointers: ILoadBlocksByPointers.Request
-    ): Promise<ILoadBlocksByPointers.Response>
+    ): Promise<ILoadBlocksByPointers.Response>;
 }

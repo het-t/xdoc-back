@@ -21,8 +21,8 @@ export class AuthController extends BaseController {
     ): Promise<AuthController.Response> {
         try {
             const token = httpRequest.headers?.cookie?.split("=")?.[1];        
-            await this.authenticate.execute(token);
-            return ok({});
+            const decodedToken = await this.authenticate.execute(token);
+            return ok(decodedToken);
         }
         catch(error) {
             return forbidden(new Error("Invalid token"));
