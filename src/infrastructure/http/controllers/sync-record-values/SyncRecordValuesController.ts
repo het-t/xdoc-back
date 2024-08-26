@@ -1,6 +1,6 @@
 import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
 import { BaseController } from "@infrastructure/http/controllers/BaseController";
-import { forbidden, ok, unauthorized } from "@infrastructure/http/helpers/http";
+import { ok, unauthorized } from "@infrastructure/http/helpers/http";
 import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 
@@ -41,9 +41,17 @@ export class SyncRecordValuesController extends BaseController {
             userId: locals.userId
         });
 
+        const recordMap: Record<string, any> = {};
+
+        responseRecordValues.map(recordValue => {
+            
+        })
+
         return ok({
             recordMap: responseRecordValues
         });
+    }
+}
         // recordPointers.map(async (pointer: IPointer) => {    
             
         //     if (pointer.id === "!ad3a2c35-a9c8-4d99-8182-051fc8964207") {
@@ -771,5 +779,3 @@ export class SyncRecordValuesController extends BaseController {
         //     //     }
         //     // }
         // });
-    }
-}

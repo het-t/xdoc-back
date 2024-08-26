@@ -1,10 +1,10 @@
-import { Membership } from "@application/interfaces/strutuctures/IMembership"
+import { TeamMembership } from "@domain/interfaces/TeamMembership";
 
 export namespace IRemoveTeamMembersRepository {
     export type Request = {
         spaceId: string,
         teamId: string,
-        existingMembersOrGuestsToRemove: Membership[]
+        existingMembersOrGuestsToRemove: TeamMembership[]
     };
     export type Response = Promise<void>;
 }

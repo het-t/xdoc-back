@@ -1,10 +1,10 @@
 import { ICreateWorkspaceRepository } from "@application/interfaces/repositories/spaces/ICreateWorkspaceRepository";
 import { ILoadWorkspaceByIdRepository } from "@application/interfaces/repositories/spaces/ILoadWorkspaceById";
 import { pool } from "../helpers/db-connection";
-import { Workspace } from "@domain/entities/workspace";
 import { IGetSpacesRepository } from "@application/interfaces/repositories/spaces/IGetSpacesRepository";
 import { IRemoveUsersByIdsRepository } from "@application/interfaces/repositories/spaces/IRemoveUsersByIdsRepository";
 import { IRemovePagePermissionsRepository } from "@application/interfaces/repositories/spaces/IRemovePagePermissionsRepository";
+import { Space } from "@domain/interfaces/Space";
 
 export class WorkspaceRepository implements
     ICreateWorkspaceRepository,
@@ -13,7 +13,7 @@ export class WorkspaceRepository implements
     IRemoveUsersByIdsRepository,
     IRemovePagePermissionsRepository
 {
-    async loadWorkspaceById(id: string): Promise<Workspace> {
+    async loadWorkspaceById(id: string): Promise<Space> {
         return null;
     }
 

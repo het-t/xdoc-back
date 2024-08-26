@@ -5,7 +5,6 @@ import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { ok, unauthorized } from "@infrastructure/http/helpers/http";
 import { ISignInInterface } from "@application/interfaces/use-cases/users/ISignInInterface";
-import { IUser } from "@domain/entities/IUser";
 
 export namespace SignInController {
     export type Request = IHttpRequest;

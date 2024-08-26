@@ -1,4 +1,4 @@
 export interface IDbResponse<T=any[]> {
-    rows: T[],
+    rows: T,
     rowCount: number
 }

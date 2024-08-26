@@ -1,4 +1,3 @@
-import { ForbiddenError } from "@application/errors/ForbiddenError";
 import { JWTVerifier } from "@application/interfaces/cyptography/JWTVerifier";
 import { IAuthenticateInterface } from "@application/interfaces/use-cases/users/IAuthenticateInterface";
 

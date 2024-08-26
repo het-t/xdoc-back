@@ -1,10 +1,10 @@
 import { WorkspaceNotFoundError } from "@application/errors/WorkspaceNotFoundError";
-import { Workspace } from "@domain/entities/workspace";
+import { Space } from "@domain/interfaces/Space";
 
 export namespace ILoadWorkspaceByIdRepository {
     export type Request = string
-    export type Response = Workspace
-        | WorkspaceNotFoundError;
+    export type Response = Space
+    | WorkspaceNotFoundError;
 }
 
 export interface ILoadWorkspaceByIdRepository {

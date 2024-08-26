@@ -1,5 +1,5 @@
 import { BlockNotFoundError } from "@application/errors/BlockNotFoundError";
-import { Collection } from "@domain/entities/collection";
+import { Collection } from "@domain/interfaces/Collection";
 
 export namespace ICollectionLoadByIdRepository {
     export type Request = string;

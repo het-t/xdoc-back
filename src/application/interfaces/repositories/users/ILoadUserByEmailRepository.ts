@@ -1,8 +1,8 @@
-import { IUser } from "@domain/entities/IUser";
+import { User } from "@domain/interfaces/User";
 
 export namespace ILoadUserByEmailRepository {
     export type Request = string;
-    export type Response = IUser;
+    export type Response = Array<User & { password: string }>;
 }
 
 export interface ILoadUserByEmailRepository {

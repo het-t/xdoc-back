@@ -11,11 +11,9 @@ export class GetJoinedTeamsByUserId
   async execute(
     { userId, spaceId }: IGetJoinedTeamsByUserId.Request
   ): Promise<IGetJoinedTeamsByUserId.Response> {
-    return (
-      await this.getJoinedTeamsByUserIdRepository.getJoinedTeamsByUserId({
-        userId,
-        spaceId
-      })
-    ).rows; 
+    return await this.getJoinedTeamsByUserIdRepository.getJoinedTeamsByUserId({
+      userId,
+      spaceId
+    });
   }
 }

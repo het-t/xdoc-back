@@ -1,7 +1,7 @@
 import { InvalidPasswordError } from "@application/errors/InvalidPasswordError";
 import { InvalidUserError } from "@application/errors/InvalidUserError";
 import { UseCase } from "../UseCase";
-import { IUser } from "@domain/entities/IUser";
+import { User } from "@domain/interfaces/User";
 
 export namespace ISignInInterface {
     export type Request = {
@@ -12,7 +12,7 @@ export namespace ISignInInterface {
         { 
             authenticationToken: string; 
             refreshToken: string,
-            user: Omit<IUser, "password">
+            user: User
         }
         | InvalidUserError
         | InvalidPasswordError

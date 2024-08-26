@@ -1,7 +1,11 @@
 import { ILoadBlocksByPointersRepository } from "@application/interfaces/repositories/blocks/ILoadBlocksByPointersRepository";
 import { IGetBlockPermissionsByIds } from "@application/interfaces/use-cases/blocks/IGetBlockPermissionsByIds";
 import { ILoadBlocksByPointers } from "@application/interfaces/use-cases/blocks/ILoadBlocksByPointers";
-import { IPointer } from "@domain/entities/ITransaction";
+import { IPointer } from "@domain/interfaces/ITransaction";
+import { Role } from "@domain/interfaces/Role";
+import { TeamMembership } from "@domain/interfaces/TeamMembership";
+import { TeamPermission } from "@domain/interfaces/TeamPermission";
+import { TeamPermissionType } from "@domain/interfaces/TeamPermissionType";
 
 const tables = ["block", "collection", "collection_view", "xdoc_space", "space_user", "xdoc_user"];
 
@@ -61,8 +65,10 @@ export class LoadBlocksByPointers implements ILoadBlocksByPointers {
                         space_settings: spaceSettings,
                         block_overriden_permissions: overridenPermissions
                     }) => {
-                        if(effectiveParentTable === "xdoc_space") mapRecordIdsRoles[id] = spaceRole;
-                        else {
+                        if(effectiveParentTable === "xdoc_space") {
+                            mapRecordIdsRoles[id] = "editor";
+                        }
+                        else if(effectiveParentTable === "team") {
                             const teamRight = extractTeamPermission(
                                 teamPermissions, 
                                 teamMemberships, 
@@ -196,33 +202,9 @@ function syncRelatedRecordValues(pointers: IPointer[], allresponsedPointerIds: S
     }
 }
 
-type TeamRole = 'member' 
-    | 'owner';
-
-type Role = 'editor' 
-    | 'comment_only'
-    | 'reader'
-    | 'none';
-
-type TeamPermissionType = "explicit_team_permission" 
-    | "explicit_team_owner_permission" 
-    | "space_permission";
-
-interface TeamPermission {
-    role: Role;
-    type: TeamPermissionType;
-    team_id: string;
-};
-
-interface TeamMemberships {
-    type: TeamRole;
-    user_id: string;
-    entity_type: "user";
-};
-
 function extractTeamPermission(
     teamPermissions: TeamPermission[], 
-    teamMemberships: TeamMemberships[], 
+    teamMemberships: TeamMembership[], 
     userId: string,
     isTeamDefault: boolean,
     inSpace: boolean

@@ -1,34 +1,25 @@
-import { TeamPermissionItem } from "@domain/entities/TeamPermission";
+import { TeamMembership } from "@domain/interfaces/TeamMembership";
+import { TeamPermission } from "@domain/interfaces/TeamPermission";
+import { TeamSetting } from "@domain/interfaces/TeamSetting";
+import { UUID } from "crypto";
 
 export namespace ICreateTeamRepository {
-    export type Request = {
-        id: string,
-        userId: string,
-        spaceId: string,
+    export type Request = { 
+        id: UUID,
+        userId: UUID,
+        spaceId: UUID,
         name: string,
         description: string,
-        isDefault: boolean,
-        settings: {
-            visibility: string,
-            invite_access: string,
-            disable_export: boolean,
-            disable_guest: boolean,
-            disable_public_access: boolean,
-            disable_team_page_edits: boolean,
-            space_member_join_access: string
-        },
-        permissions: TeamPermissionItem[],
-        memberships: Array<{
-            type: string,
-            user_id: string,
-            entity_type: string
-        }>
+        settings: TeamSetting,
+        permissions: TeamPermission[],
+        memberships: TeamMembership[],
+        isDefault: boolean;
     };
     export type Response = Promise<void>;
 }
 
 export interface ICreateTeamRepository {
     createTeam(
-        { id, spaceId, name, description, settings, permissions, memberships }: ICreateTeamRepository.Request
+        team: ICreateTeamRepository.Request
     ): Promise<ICreateTeamRepository.Response>;
 }

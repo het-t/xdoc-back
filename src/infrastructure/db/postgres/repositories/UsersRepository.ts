@@ -27,7 +27,7 @@ export class UserRepository implements
             .where(`email`, email)
             .where('alive', true)
             .limit(1);
-        return (await query)[0];
+        return (await query);
     }
 
     async getSpaceUsers(

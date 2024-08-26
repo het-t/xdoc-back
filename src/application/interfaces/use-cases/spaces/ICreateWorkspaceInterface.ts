@@ -1,8 +1,8 @@
-import { Workspace } from "@domain/entities/workspace";
 import { UseCase } from "../UseCase";
+import { Space } from "@domain/interfaces/Space";
 
 export namespace ICreateWorkspaceInterface {
-    export type Request = Omit<Workspace, "id" | "createdAt" | "editedAt">;
+    export type Request = Omit<Space, "id" | "created_at" | "last_edited_at">;
     export type Response = string; 
 }
 

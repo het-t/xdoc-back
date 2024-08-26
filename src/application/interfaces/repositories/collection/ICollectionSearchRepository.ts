@@ -1,6 +1,8 @@
+import { UUID } from "crypto"
+
 export namespace ICollectionSearchRepository {
     export type Request = {
-        collectionId: string,
+        collectionId: UUID,
         filters: {
             ancestors: Array<string>,
             createdBy: Array<string>,
@@ -19,7 +21,7 @@ export namespace ICollectionSearchRepository {
         query: string,
         recentPagesForBoosting: Array<{
             visitedAt: string,
-            pageId: string
+            pageId: UUID
         }>,
         sort: object,
         spaceId: string

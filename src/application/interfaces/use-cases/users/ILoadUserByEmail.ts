@@ -1,9 +1,9 @@
-import { IUser } from "@domain/entities/IUser";
 import { UseCase } from "../UseCase";
+import { User } from "@domain/interfaces/User";
 
 export namespace ILoadUserByEmail {
     export type Request = string;
-    export type Response = IUser;
+    export type Response = User;
 }
 
 export interface ILoadUserByEmail extends UseCase<

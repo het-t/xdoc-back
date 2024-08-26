@@ -1,6 +1,6 @@
 import { BlockNotFoundError } from "@application/errors/BlockNotFoundError";
-import { Collection } from "@domain/entities/collection";
 import { UseCase } from "../UseCase";
+import { Collection } from "@domain/interfaces/Collection";
 
 export namespace ICollectionLoadById {
     export type Request = string;

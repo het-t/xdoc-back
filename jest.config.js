@@ -5,7 +5,7 @@
  * https://jestjs.io/docs/configuration
  */
 
-const { defaults: tsjPreset } = require('ts-jest/presets');
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 
 module.exports = {
   // All imported modules in your tests should be mocked automatically
@@ -100,7 +100,8 @@ module.exports = {
     "@application/(.*)": "<rootDir>/src/application/$1",
     "@infrastructure/(.*)": "<rootDir>/src/infrastructure/$1",
     "@main/(.*)": "<rootDir>/src/main/$1",
-    "@tests/(.*)": "<rootDir>/tests/$1" 
+    "@tests/(.*)": "<rootDir>/tests/$1",
+    "@config/(.*)": "<rootDir>/src/config/$1"
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -113,8 +114,6 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: '@shelf/jest-mongodb',
-
   // Run tests from one or more projects
   // projects: undefined,
 
@@ -138,7 +137,7 @@ module.exports = {
 
   // A list of paths to directories that Jest should use to search for files in
   roots: [
-    "<rootDir>/tests/"
+    "<rootDir>/src/"
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
@@ -186,15 +185,18 @@ module.exports = {
   // testRunner: "jest-circus/runner",
 
   // A map from regular expressions to paths to transformers
-  transform: {
-    ...tsjPreset.transform,
-  },
+  preset: 'ts-jest',
 
+  transform: {
+    '^.+\\.ts$': 'ts-jest',  // Transform TypeScript files using ts-jest
+  },
+  
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
   //   "/node_modules/",
   //   "\\.pnp\\.[^\\/]+$"
   // ],
+
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

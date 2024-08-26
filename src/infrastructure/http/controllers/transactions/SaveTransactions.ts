@@ -4,7 +4,7 @@ import { BaseController } from "../BaseController";
 import { badRequest, ok } from "@infrastructure/http/helpers/http";
 import { InvalidOperationPointer } from "@infrastructure/http/errors/InvalidOperationPointer";
 import { InvalidOperationCommand } from "@infrastructure/http/errors/InvalidOperationCommand";
-import { ITransaction } from "@domain/entities/ITransaction";
+import { ITransaction } from "@domain/interfaces/ITransaction";
 import { IHandleOperation } from "@application/interfaces/use-cases/handle-operation/IHandleOperation";
 
 export namespace SaveTransactionsController {

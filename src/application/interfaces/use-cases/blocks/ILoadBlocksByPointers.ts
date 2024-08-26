@@ -1,6 +1,6 @@
 import { BlockNotFoundError } from "@application/errors/BlockNotFoundError";
 import { UseCase } from "../UseCase";
-import { IPointer } from "@domain/entities/ITransaction";
+import { IPointer } from "@domain/interfaces/ITransaction";
 
 export namespace ILoadBlocksByPointers {
     export type Request = {

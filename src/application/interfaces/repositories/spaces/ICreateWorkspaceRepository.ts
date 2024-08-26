@@ -1,7 +1,7 @@
-import { WorkspaceProps } from "@domain/entities/workspace";
+import { Space } from "@domain/interfaces/Space";
 
 export namespace ICreateWorkspaceRepository {
-    export type Request = Omit<WorkspaceProps, "id" | "createdAt" | "editedAt">
+    export type Request = Omit<Space, "id" | "created_at" | "last_edited_at">
     export type Response = string;
 }
 

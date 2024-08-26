@@ -1,11 +1,11 @@
-import { Membership } from "@application/interfaces/strutuctures/IMembership";
+import { TeamMembership } from "@domain/interfaces/TeamMembership";
 
 export namespace IUpdateTeamMembers {
     export type Request = {
         spaceId: string,
         teamId: string,
-        newMembersOrGuestsToAdd?: Membership[],
-        existingMembersOrGuestsToRemove?: Membership[],
+        newMembersOrGuestsToAdd?: TeamMembership[],
+        existingMembersOrGuestsToRemove?: TeamMembership[],
         isSettingDefaultTeam: boolean,
         addNewMembersToSpace?: boolean
     }

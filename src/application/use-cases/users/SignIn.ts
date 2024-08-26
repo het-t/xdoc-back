@@ -19,7 +19,7 @@ export class SignIn implements ISignInInterface {
     ): Promise<ISignInInterface.Response> {
         const { email, password } = credentials;
 
-        const user = await this.loadUserByEmailRepository.loadUserByEmail(email);
+        const [user] = await this.loadUserByEmailRepository.loadUserByEmail(email);
 
         if (!user) {
             return new InvalidUserError();
@@ -39,6 +39,8 @@ export class SignIn implements ISignInInterface {
 
         await this.createTokenRepository.createToken(refreshToken);
 
+        if(!authenticationToken) throw new Error("Unable to generate tokens");
+        
         return {
             authenticationToken,
             refreshToken,

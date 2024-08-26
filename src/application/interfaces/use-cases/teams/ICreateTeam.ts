@@ -1,12 +1,17 @@
+import { UUID } from "crypto";
+
 export namespace ICreateTeam {
     export type Request = {
-        id: string,
-        userId: string,
-        spaceId: string,
+        id: UUID,
+        userId: UUID,
+        spaceId: UUID,
         name: string,
         description: string,
         isDefault: boolean,
-        accessLevel: "closed" | "open" | "default" | "private"
+        accessLevel: "closed" 
+        | "open" 
+        | "default" 
+        | "private"
     };
     export type Response = Promise<void>;
 }

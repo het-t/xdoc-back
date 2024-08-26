@@ -1,4 +1,4 @@
-import { IOperation } from "@domain/entities/ITransaction";
+import { IOperation } from "@domain/interfaces/ITransaction";
 
 export namespace IKeyedObjectListBeforeRepository {
     export type Request = IOperation;

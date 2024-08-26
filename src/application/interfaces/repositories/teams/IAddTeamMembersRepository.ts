@@ -1,10 +1,10 @@
-import { Membership } from "@application/interfaces/strutuctures/IMembership";
+import { TeamMembership } from "@domain/interfaces/TeamMembership";
 
 export namespace IAddTeamMembersRepository {
     export type Request = {
         spaceId: string,
         teamId: string,
-        newMembersOrGuestsToAdd: Membership[],
+        newMembersOrGuestsToAdd: TeamMembership[],
         isSettingDefaultTeam: boolean
     };
     export type Response = Promise<void>;

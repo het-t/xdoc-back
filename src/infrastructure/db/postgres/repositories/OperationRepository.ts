@@ -1,5 +1,5 @@
 import { pool } from "../helpers/db-connection";
-import { IPointer } from "@domain/entities/ITransaction";
+import { IPointer } from "@domain/interfaces/ITransaction";
 import { ISetRepository } from "@application/interfaces/repositories/operations/ISetRepository";
 import { IUpdateRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
 import { ISetParentRepository } from "@application/interfaces/repositories/operations/ISetParentRepository";

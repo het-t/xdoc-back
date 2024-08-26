@@ -1,4 +1,4 @@
-import { IOperation } from "@domain/entities/ITransaction";
+import { IOperation } from "@domain/interfaces/ITransaction";
 import { UseCase } from "../UseCase";
 
 export namespace IHandleOperation {

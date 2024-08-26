@@ -1,10 +1,10 @@
-import { Workspace } from "@domain/entities/workspace";
 import { UseCase } from "../UseCase"
 import { WorkspaceNotFoundError } from "@application/errors/WorkspaceNotFoundError";
+import { Space } from "@domain/interfaces/Space";
 
 export namespace ILoadWorkspaceByIdInterface {
     export type Request = string;
-    export type Response = Workspace
+    export type Response = Space
         | WorkspaceNotFoundError;
 }
 
