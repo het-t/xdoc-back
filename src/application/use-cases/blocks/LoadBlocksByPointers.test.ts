@@ -2,115 +2,78 @@ import { BlockRepository } from "@infrastructure/db/postgres/repositories/BlockR
 import { makeMockLoadBlocksByPointers } from "@main/factories/use-cases/blocks/load-blocks-by-pointers.mock";
 import { GetBlockPermissionsByIds } from "./GetBlockPermissionsByIds";
 import { LoadBlocksByPointers } from "./LoadBlocksByPointers";
-import { makeGetBlockPermissionsByIds } from "@main/factories/use-cases/blocks/get-block-permissions-by-ids";
-import { Block } from "@domain/interfaces/Block";
+import { blockScenarios, spaceScenarios } from "./LoadBlocksByPointers.test-data";
+import { WorkspaceRepository } from "@infrastructure/db/postgres/repositories/WorkspaceRepository";
+
 
 describe("usecase loadBlocksByPointers", () => {
 
-    let loadBlocksByPointersUsecase: LoadBlocksByPointers;
     let mockBlockRepository: jest.Mocked<BlockRepository>;
+    let mockWorkspaceRepository: jest.Mocked<WorkspaceRepository>;
+    let loadBlocksByPointersUsecase: LoadBlocksByPointers;
     let mockGetBlockPermissionsByIds: jest.Mocked<GetBlockPermissionsByIds>;
 
     beforeEach(() => {
         loadBlocksByPointersUsecase = makeMockLoadBlocksByPointers();
+        
         mockBlockRepository = (loadBlocksByPointersUsecase as any).loadBlocksByPointersRepository;
-        mockGetBlockPermissionsByIds = (loadBlocksByPointersUsecase as any).getBlockPermissionsByIds;
+        mockWorkspaceRepository = (loadBlocksByPointersUsecase as any).getUsersSpaceRolesRepository;
 
+        mockGetBlockPermissionsByIds = (loadBlocksByPointersUsecase as any).getBlockPermissionsByIds;
         mockGetBlockPermissionsByIds.execute = jest.fn();
     });
 
-    it("block do not exists", async() => {
-        const mockInput = {
-            pointers: [{
-                id: "93c31799-f1e3-495c-a17a-8ba5089b9199",
-                table: "block",
-                spaceId: "095a7ba0-7e68-40b2-ab82-4bde27e8c391"
-            }],
-            userId: "095a7ba0-7e68-40b2-ab82-4bde27e8c391"
-        };
+    test.each(
+        blockScenarios
+    )("$description", async({ mockInput, mockBlockPermissionsByIds, mockRecordValues, expectedResults }) => {
+        mockGetBlockPermissionsByIds.execute.mockResolvedValueOnce(mockBlockPermissionsByIds as any)
         
-        mockGetBlockPermissionsByIds.execute.mockResolvedValue([]);
-
-        const result = await loadBlocksByPointersUsecase.execute(mockInput);
-
-        expect(result).toEqual({});
-    });
-    
-    it("block is in teamspace, user is not part of it, but team settings allows view access for space_members", async() => {
-        const mockInput = {
-            pointers: [{
-                id: "93c31799-f1e3-495c-a17a-8ba5089b9199",
-                table: "block",
-                spaceId: "095a7ba0-7e68-40b2-ab82-4bde27e8c391"
-            }],
-            userId: "095a7ba0-7e68-40b2-ab82-4bde27e8c391"
-        };
-        
-        mockGetBlockPermissionsByIds.execute.mockResolvedValue([{
-            id: "93c31799-f1e3-495c-a17a-8ba5089b9199",
-            space_id: "095a7ba0-7e68-40b2-ab82-4bde27e8c391",
-            effective_parent_table: "team",
-            team_permissions: [],
-            is_team_default: false,
-            team_settings: {
-                visibility: "space_members",
-                invite_access: "space_members",
-                disable_export: false,
-                disable_public_access: false,
-                disable_team_page_edits: false,
-                space_member_join_access: "self_join"
-            },
-            team_memberships: [{
-                type: "member",
-                user_id: "095a7ba0-7e68-40b2-ab82-4bde27e8c391",
-                entity_type: "user"
-            }],
-            space_role: "member",
-            space_settings: {},
-            block_overriden_permissions: {}
-        }]);
-
-        const mockRecordValues: Array<Block> = [{
-            id: "93c31799-f1e3-495c-a17a-8ba5089b9199",
-            type: "page",
-            created_by_id: "095a7ba0-7e68-40b2-ab82-4bde27e8c391",
-            created_time: 1,
-            last_edited_by_id: "095a7ba0-7e68-40b2-ab82-4bde27e8c391",
-            last_edited_time: 1,
-            space_id: "095a7ba0-7e68-40b2-ab82-4bde27e8c391",
-            alive: true,
-            properties: {},
-            format: {},
-            content: [],
-            parent_id: "095a7ba0-7e68-40b2-ab82-4bde27e8c391",
-            parent_table: "xdoc_space",
-            view_ids: [],
-            created_by_table: "xdoc_space",
-            last_edited_by_table: "xdoc_user",
-            permissions: []
-        }];
-
-        mockBlockRepository.loadBlocksByPointers.mockResolvedValue({
+        mockBlockRepository.loadBlocksByPointers
+        .mockResolvedValueOnce({
             rows: mockRecordValues,
-            rowCount: 1
+            rowCount: mockRecordValues.length
         });
 
         const result = await loadBlocksByPointersUsecase.execute(mockInput);
 
-        expect(result).toEqual({
-            recordValue: 
-        });
+        expect(result).toEqual(expectedResults);
     });
 
+    test.each(
+        spaceScenarios
+    )("$description", async({ mockInput, mockUserSpaceRoles, mockRecordValues, expectedResults, }) => {        
+        mockWorkspaceRepository.getUserSpaceRole
+        .mockResolvedValueOnce({
+            rows: mockUserSpaceRoles || [],
+            rowCount: mockUserSpaceRoles?.length || 0
+        });
+
+        mockBlockRepository.loadBlocksByPointers
+        .mockResolvedValueOnce({
+            rows: mockRecordValues,
+            rowCount: mockRecordValues.length
+        });
+
+        const result = await loadBlocksByPointersUsecase.execute(mockInput);
+
+        expect(result).toEqual(expectedResults);
+    });
 });
 
 /**
- * Section1: request is for table block
- *  test1: block do not exists
- *  test2: block is in teamspace, user is not part of it, but team settings allows view access for space_members
- *  test3: block is in teamspace, user is not part of it, and team settings do not allow any access for space_members
- *  test4: block is private, user do not have access
- *  test5: block is private, user has access through overriden permissions
- * 
- * Section2: request if for space
+ * [-] Section1: request is for table block
+ *  [+] block do not exist
+ *  [+] block is in teamspace, user member of teamspace, member has full access to content
+ *  [+] block is in teamspace, user not member of teamspace, no permission for space members is defined
+ *  [+] block is in teamspace, user not member of teamspace, full access for space members
+ *  [+] block is in teamspace, user not member of teamspace, user not member of space
+ *  [-] block is in teamspace, teamspace is default, no explicit team permission for user
+ *  [-] block is private, user is owner
+ *  [-] block is private, user has no access
+ *  [-] block is private, user has access through overriden permissions
+ *
+ * [+] Section2: request is for space
+ *  [+] user is space owner
+ *  [+] user is space member
+ *  [+] user is not in space
  */

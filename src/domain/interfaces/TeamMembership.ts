@@ -1,5 +1,4 @@
 import { UUID } from "crypto";
-import { Role } from "./Role"
 
 export type TeamMembership = {
     type: "owner"

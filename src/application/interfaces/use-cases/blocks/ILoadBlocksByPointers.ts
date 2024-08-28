@@ -1,13 +1,14 @@
 import { BlockNotFoundError } from "@application/errors/BlockNotFoundError";
 import { UseCase } from "../UseCase";
 import { IPointer } from "@domain/interfaces/ITransaction";
+import { UUID } from "crypto";
 
 export namespace ILoadBlocksByPointers {
     export type Request = {
         pointers: IPointer[],
-        userId: string
+        userId: UUID
     };
-    export type Response = Record<string, Array<object | BlockNotFoundError>>;
+    export type Response = any[];
 }
 
 export interface ILoadBlocksByPointers extends UseCase<

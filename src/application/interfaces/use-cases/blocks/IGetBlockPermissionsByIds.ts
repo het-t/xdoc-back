@@ -7,21 +7,27 @@ import { SpaceSetting } from "@domain/interfaces/SpaceSetting";
 
 export namespace IGetBlockPermissionsByIds {
     export type Request = {
-        ids: string[],
-        userId: string
+        ids: UUID[],
+        userId: UUID
     };
     export type Response = Array<{
         id: UUID, 
         space_id: UUID,
-        effective_parent_table: "team" | "xdoc_space",
-        team_permissions: TeamPermission[], 
-        is_team_default: boolean,
-        team_settings: TeamSetting,
-        team_memberships: TeamMembership[], 
-        space_role: "owner" | "member", 
-        space_settings: SpaceSetting,
-        block_overriden_permissions: Record<string, any>
-    }>;
+        block_overriden_permissions?: Record<string, any>,
+        space_role: "owner" | "member" | null,
+    } & (
+        {
+            effective_parent_table: "team",
+            is_team_default: boolean,
+            team_settings: TeamSetting,
+            team_memberships: TeamMembership[],     
+            team_permissions: TeamPermission[],  
+            space_settings: SpaceSetting | null,
+        } | {
+            effective_parent_table: "xdoc_space",
+            space_settings?: SpaceSetting | null,
+        }
+    )>;
 }
 
 export interface IGetBlockPermissionsByIds extends UseCase<

@@ -5,13 +5,15 @@ import { IGetSpacesRepository } from "@application/interfaces/repositories/space
 import { IRemoveUsersByIdsRepository } from "@application/interfaces/repositories/spaces/IRemoveUsersByIdsRepository";
 import { IRemovePagePermissionsRepository } from "@application/interfaces/repositories/spaces/IRemovePagePermissionsRepository";
 import { Space } from "@domain/interfaces/Space";
+import { IGetUserSpaceRoleRepository } from "@application/interfaces/repositories/spaces/IGetUserSpaceRoleRepository";
 
 export class WorkspaceRepository implements
     ICreateWorkspaceRepository,
     ILoadWorkspaceByIdRepository,
     IGetSpacesRepository,
     IRemoveUsersByIdsRepository,
-    IRemovePagePermissionsRepository
+    IRemovePagePermissionsRepository,
+    IGetUserSpaceRoleRepository
 {
     async loadWorkspaceById(id: string): Promise<Space> {
         return null;
@@ -46,5 +48,12 @@ export class WorkspaceRepository implements
         { userIds, spaceId }: IRemovePagePermissionsRepository.Request
     ): Promise<IRemovePagePermissionsRepository.Response> {
         return Promise.resolve();
+    }
+
+    getUserSpaceRole({ ids, userId }: IGetUserSpaceRoleRepository.Request): Promise<IGetUserSpaceRoleRepository.Response> {
+        return Promise.resolve({
+            rows: [],
+            rowCount: 0
+        });
     }
 }

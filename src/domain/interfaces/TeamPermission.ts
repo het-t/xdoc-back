@@ -1,6 +1,5 @@
 import { UUID } from "crypto";
 import { Role } from "./Role"
-import { TeamPermissionType } from "./TeamPermissionType";
 
 export type TeamPermission = {
     role: Role;

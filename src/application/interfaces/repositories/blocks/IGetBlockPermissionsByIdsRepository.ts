@@ -1,4 +1,9 @@
 import { IDbResponse } from "@application/interfaces/db/IDbResponse";
+import { SpaceSetting } from "@domain/interfaces/SpaceSetting";
+import { TeamMembership } from "@domain/interfaces/TeamMembership";
+import { TeamPermission } from "@domain/interfaces/TeamPermission";
+import { TeamSetting } from "@domain/interfaces/TeamSetting";
+import { UUID } from "crypto";
 
 export namespace IGetBlockPermissionsByIdsRepository {
     export type Request = {
@@ -6,11 +11,16 @@ export namespace IGetBlockPermissionsByIdsRepository {
         userId: string
     };
     export type Response = IDbResponse<Array<{
-        id: string,
-        block_overriden_permission: Record<string, any>
-        collection_permissions: Record<string, any>,
-        team_permissions: Record<string, any>
-        space_role: "member" | "owner"
+        id: UUID, 
+        space_id: UUID,
+        effective_parent_table: "team" | "xdoc_space",
+        team_permissions: TeamPermission[], 
+        is_team_default: boolean,
+        team_settings: TeamSetting,
+        team_memberships: TeamMembership[], 
+        space_role: "owner" | "member", 
+        space_settings: SpaceSetting,
+        block_overriden_permissions: Record<string, any>
     }>> | Error;
 }
 

@@ -3,11 +3,15 @@ import { IGetBlockPermissionsByIds } from "@application/interfaces/use-cases/blo
 
 export class GetBlockPermissionsByIds implements IGetBlockPermissionsByIds {
     constructor(
-        private readonly getBlockPermissionsByIdsRepository: IGetBlockPermissionsByIdsRepository
-    ) {}
+        private readonly getBlockPermissionsByIdsRepository: IGetBlockPermissionsByIdsRepository    ) {}
 
-    async execute({ ids, userId }: IGetBlockPermissionsByIds.Request): Promise<IGetBlockPermissionsByIds.Response> {
-        const accessibleBlocks = await this.getBlockPermissionsByIdsRepository.getBlockPermissionsByIds({ ids, userId });
+    async execute(
+        { ids, userId }: IGetBlockPermissionsByIds.Request
+    ): Promise<IGetBlockPermissionsByIds.Response> {
+        let accessibleBlocks = await this.getBlockPermissionsByIdsRepository.getBlockPermissionsByIds({ 
+                ids, 
+                userId
+            });
 
         if(accessibleBlocks instanceof Error) throw new Error(accessibleBlocks.toString());
 
