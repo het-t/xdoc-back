@@ -1,4 +1,3 @@
-import { pool } from "../helpers/db-connection";
 import { IEnqueueTaskRepository } from "@application/interfaces/repositories/enqueue-tasks/IEnqueueTaskRepository";
 import { IGetTasksRepository } from "@application/interfaces/repositories/get-tasks/IGetTasksRepository";
 

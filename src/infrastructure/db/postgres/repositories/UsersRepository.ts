@@ -1,7 +1,7 @@
 import { ICreateUserRepository } from "@application/interfaces/repositories/users/ICreateUserRepository";
 import { ILoadUserByEmailRepository } from "@application/interfaces/repositories/users/ILoadUserByEmailRepository";
-import { pool } from "../helpers/db-connection";
 import { IGetSpaceUsersRepository } from "@application/interfaces/repositories/users/IGetSpaceUsersRepository";
+import { knexPool } from "../knex/knex";
 
 export class UserRepository implements
     ICreateUserRepository,
@@ -11,7 +11,7 @@ export class UserRepository implements
     async createUser(
         { email, name, id, password }: ICreateUserRepository.Request
     ): Promise<ICreateUserRepository.Response> {
-        return await pool("xdoc_user").insert({
+        return await knexPool("xdoc_user").insert({
             id,
             email,
             password,
@@ -22,7 +22,7 @@ export class UserRepository implements
     async loadUserByEmail(
         email: ILoadUserByEmailRepository.Request
     ): Promise<ILoadUserByEmailRepository.Response> {
-        const query = pool.select('*')
+        const query = knexPool.select('*')
             .from("xdoc_user")
             .where(`email`, email)
             .where('alive', true)
@@ -33,7 +33,7 @@ export class UserRepository implements
     async getSpaceUsers(
         { spaceId }: IGetSpaceUsersRepository.Request
     ): Promise<IGetSpaceUsersRepository.Response> {
-        const users = (await pool.raw(`
+        const users = (await knexPool.raw(`
             select 
                 user_id,
                 membership_type

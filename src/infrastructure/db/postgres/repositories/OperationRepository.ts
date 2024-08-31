@@ -1,4 +1,3 @@
-import { pool } from "../helpers/db-connection";
 import { IPointer } from "@domain/interfaces/ITransaction";
 import { ISetRepository } from "@application/interfaces/repositories/operations/ISetRepository";
 import { IUpdateRepository } from "@application/interfaces/repositories/operations/IUpdateOperationRepository";
@@ -8,6 +7,7 @@ import { IKeyedObjectListUpdateRepository } from "@application/interfaces/reposi
 import { IKeyedObjectListRemoveRepository } from "@application/interfaces/repositories/operations/IKeyedObjectListRemoveRepository";
 import { IAddRelationAfterRepository } from "@application/interfaces/repositories/operations/IAddRelationAfterRepository";
 import { ISetPermissionItemRepository } from "@application/interfaces/repositories/operations/ISetPermissionItemRepository";
+import { knexPool } from "../knex/knex";
 
 export class OperationRepository implements 
     ISetRepository,
@@ -30,7 +30,7 @@ export class OperationRepository implements
         if(o.pointer.id) filter.id = o.pointer.id;
         if(o.pointer.spaceId) filter.space_id = o.pointer.spaceId;
 
-        let query = pool(o.pointer.table);
+        let query = knexPool(o.pointer.table);
 
         if(o.path.length === 0) {
             query = query.insert(o.args);
@@ -42,7 +42,7 @@ export class OperationRepository implements
                     : o.args[key]
                 );
                 query = query.update({
-                    [o.path[0]]: pool.jsonSet(
+                    [o.path[0]]: knexPool.jsonSet(
                         o.path[0],
                         key,
                         _args
@@ -61,7 +61,7 @@ export class OperationRepository implements
             );
             
             query = query.update({
-                [o.path[0]]: pool.jsonSet(
+                [o.path[0]]: knexPool.jsonSet(
                     o.path[0],
                     updateTargetPath,
                     _args
@@ -85,11 +85,11 @@ export class OperationRepository implements
         if(o.pointer.id) filter.id = o.pointer.id;
         if(o.pointer.spaceId) filter.space_id = o.pointer.spaceId;
 
-        let query = pool(o.pointer.table)
+        let query = knexPool(o.pointer.table)
         .where(filter);
 
         if(o.path.length === 0) {
-            query = pool(o.pointer.table)
+            query = knexPool(o.pointer.table)
             .insert({
                 id: filter.id,
                 ...o.args
@@ -100,7 +100,7 @@ export class OperationRepository implements
         else if (o.path.length === 1) {
             Object.keys(o.args).forEach(key => {
                 query = query.update({
-                    [o.path[0]]: pool.jsonSet(
+                    [o.path[0]]: knexPool.jsonSet(
                         o.path[0],
                         '$.'+ key,
                         JSON.stringify(o.args[key])
@@ -112,7 +112,7 @@ export class OperationRepository implements
             const updateTargetPath = '$.' + o.path.slice(1).join('.');
 
             query = query.update({
-                [o.path[0]]: pool.jsonSet(
+                [o.path[0]]: knexPool.jsonSet(
                     o.path[0],
                     updateTargetPath,
                     JSON.stringify(o.args)
@@ -133,7 +133,7 @@ export class OperationRepository implements
         if(pointer.id) filter.id = pointer.id;
         if(pointer.spaceId) filter.space_id = pointer.spaceId;
 
-        const query = pool(pointer.table)
+        const query = knexPool(pointer.table)
         .where(filter)
         .update({
             parent_id: args.parentId,
@@ -154,10 +154,10 @@ export class OperationRepository implements
         if(pointer.id) filter.id = pointer.id;
         if(pointer.spaceId) filter.space_id = pointer.spaceId;
 
-        const query = pool(pointer.table)
+        const query = knexPool(pointer.table)
         .where(filter)
         .update({
-            [path[0]]: pool.raw(`${path[0]} || '${JSON.stringify(args)}'::jsonb`)
+            [path[0]]: knexPool.raw(`${path[0]} || '${JSON.stringify(args)}'::jsonb`)
         });
 
         return void(await query);
@@ -166,7 +166,7 @@ export class OperationRepository implements
     async keyedObjectListUpdateOperation(
         { pointer, path, args }: IKeyedObjectListUpdateRepository.Request
     ): Promise<IKeyedObjectListUpdateRepository.Response> {
-        const targetNode = await this.getTargetIndexNode(
+        const targetNode = await OperationRepository.getTargetIndexNode(
             pointer,
             path
         );
@@ -202,7 +202,7 @@ export class OperationRepository implements
     async keyedObjectListRemoveOperation(
         {pointer, args, path}: IKeyedObjectListRemoveRepository.Request
     ): Promise<IKeyedObjectListRemoveRepository.Response> {
-        const targetNode = await this.getTargetIndexNode(
+        const targetNode = await OperationRepository.getTargetIndexNode(
             pointer,
             path,
         );
@@ -228,7 +228,7 @@ export class OperationRepository implements
     async keyedObjectListBeforeOperation(
         { pointer, path, args }: IKeyedObjectListBeforeRepository.Request
     ): Promise<IKeyedObjectListBeforeRepository.Response> {
-        const targetNode = await this.getTargetIndexNode(
+        const targetNode = await OperationRepository.getTargetIndexNode(
             pointer,
             path
         );
@@ -255,7 +255,7 @@ export class OperationRepository implements
     async addRelationAfterOperation(
         { pointer, path, args }: IAddRelationAfterRepository.Request
     ): Promise<IAddRelationAfterRepository.Response> {
-        const targetNode: any[] = await this.getTargetIndexNode(pointer, path);
+        const targetNode: any[] = await OperationRepository.getTargetIndexNode(pointer, path);
         const newRelationValue = [
             '‣',
             [[
@@ -290,7 +290,7 @@ export class OperationRepository implements
         return;
     }
 
-    private async getTargetIndexNode(
+    static async getTargetIndexNode(
         pointer: IPointer,
         path: string[],
     ) {
@@ -299,7 +299,7 @@ export class OperationRepository implements
         };
         if(pointer.spaceId) filter.space_id = pointer.spaceId;
 
-        const targetRecord = await pool(pointer.table)
+        const targetRecord = await knexPool(pointer.table)
         .where(filter)
         .first();
 

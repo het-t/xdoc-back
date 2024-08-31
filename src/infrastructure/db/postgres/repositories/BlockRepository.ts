@@ -1,6 +1,6 @@
 import { ILoadBlocksByPointersRepository } from "@application/interfaces/repositories/blocks/ILoadBlocksByPointersRepository";
-import { pool } from "../helpers/db-connection";
 import { IGetBlockPermissionsByIdsRepository } from "@application/interfaces/repositories/blocks/IGetBlockPermissionsByIdsRepository";
+import { knexPool } from "../knex/knex";
 
 export class BlockRepository implements 
   ILoadBlocksByPointersRepository,
@@ -24,7 +24,7 @@ export class BlockRepository implements
 
       case "xdoc_space": {
         sp = "select * from xdoc_spaces_get_by_ids(?);";
-        return await pool.raw(
+        return await knexPool.raw(
           sp,
           [ids]
         )
@@ -42,7 +42,7 @@ export class BlockRepository implements
 
       case "xdoc_user": {
         sp = "select * from xdoc_user_get_by_ids(?::uuid[]);";
-        return await pool.raw(
+        return await knexPool.raw(
           sp,
           [ids]
         );
@@ -53,7 +53,7 @@ export class BlockRepository implements
       }
     }
     
-    return await pool.raw(sp, [
+    return await knexPool.raw(sp, [
       ids
     ]);
   }
@@ -61,7 +61,7 @@ export class BlockRepository implements
   async getBlockPermissionsByIds(
     { ids, userId }: IGetBlockPermissionsByIdsRepository.Request
   ): Promise<IGetBlockPermissionsByIdsRepository.Response> {
-    return await pool.raw(
+    return await knexPool.raw(
       "select * from block_get_permissions_memberships(?, ?);",
       [ids, userId]
     );

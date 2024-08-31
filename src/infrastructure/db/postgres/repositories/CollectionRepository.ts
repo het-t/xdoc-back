@@ -1,6 +1,6 @@
 import { ICollectionQueryRepository } from "@application/interfaces/repositories/collection/ICollectionQueryRepository";
 import { ICollectionSearchRepository } from "@application/interfaces/repositories/collection/ICollectionSearchRepository";
-import { pool } from "../helpers/db-connection";
+import { knexPool } from "../knex/knex";
 
 export class CollectionRepository implements
     ICollectionQueryRepository,
@@ -9,7 +9,7 @@ export class CollectionRepository implements
     async queryCollection(
         { collectionId, spaceId }: ICollectionQueryRepository.Request
     ): Promise<ICollectionQueryRepository.Response> {
-        return await pool.raw(
+        return await knexPool.raw(
             'select * from collection_query(?, ?);', 
             [
                 collectionId,
