@@ -100,7 +100,6 @@ module.exports = {
     "@application/(.*)": "<rootDir>/src/application/$1",
     "@infrastructure/(.*)": "<rootDir>/src/infrastructure/$1",
     "@main/(.*)": "<rootDir>/src/main/$1",
-    "@tests/(.*)": "<rootDir>/tests/$1",
     "@config/(.*)": "<rootDir>/src/config/$1"
   },
 
@@ -157,7 +156,7 @@ module.exports = {
 
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-node",
-
+  testEnvironment: "node",
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
 
