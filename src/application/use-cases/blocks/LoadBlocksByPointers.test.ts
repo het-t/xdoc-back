@@ -2,12 +2,12 @@ import { BlockRepository } from "@infrastructure/db/postgres/repositories/BlockR
 import { makeMockLoadBlocksByPointers } from "@main/factories/use-cases/blocks/load-blocks-by-pointers.mock";
 import { GetBlockPermissionsByIds } from "./GetBlockPermissionsByIds";
 import { LoadBlocksByPointers } from "./LoadBlocksByPointers";
-import { blockScenarios, spaceScenarios } from "./LoadBlocksByPointers.test-data";
+import { blockScenarios } from "./LoadBlocksByPointers.block.test-data";
 import { WorkspaceRepository } from "@infrastructure/db/postgres/repositories/WorkspaceRepository";
-
+import { spaceScenarios } from "./LoadBlocksByPointers.xdoc-space.test-data";
 
 describe("usecase loadBlocksByPointers", () => {
-
+    
     let mockBlockRepository: jest.Mocked<BlockRepository>;
     let mockWorkspaceRepository: jest.Mocked<WorkspaceRepository>;
     let loadBlocksByPointersUsecase: LoadBlocksByPointers;
