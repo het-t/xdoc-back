@@ -1,15 +1,16 @@
+import { UUID } from "crypto"
 import { UseCase } from "../UseCase"
 
 export namespace ICollectionSearch {
     export type Request = {
-        collectionId: string,
+        collectionId: UUID,
         filters: {
-            ancestors: Array<string>,
-            createdBy: Array<string>,
+            ancestors: UUID[],
+            createdBy: UUID[],
             createdTime: Object,
             editedTime: Object,
             excludeTemplates: boolean,
-            inTeams: Array<string>,
+            inTeams: UUID[],
             includePublicPagesWithoutExplicitAccess: boolean,
             isDeletedOnly: boolean,
             lastEditedTime: Object,
@@ -21,11 +22,11 @@ export namespace ICollectionSearch {
         query: string,
         recentPagesForBoosting: Array<{
             visitedAt: string,
-            pageId: string
+            pageId: UUID
         }>,
         sort: object,
         source: string,
-        spaceId: string,
+        spaceId: UUID,
         type: "BlocksInCollection" 
     }
     export type Response = {
@@ -33,8 +34,6 @@ export namespace ICollectionSearch {
         total: number,
         recordMap: Object,
     }
-    // trackEventProperties: Object,
-    // clusterInfo: Object
 }
 
 export interface ICollectionSearch extends UseCase<

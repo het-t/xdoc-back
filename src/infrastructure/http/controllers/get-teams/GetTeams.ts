@@ -27,7 +27,7 @@ export class GetTeamsController extends BaseController {
         
         const userId = "ca5f99c6-879b-4562-bd41-6651fc8d2099";
         
-        const teams = await this.getJoinedTeamsByUserId.execute({
+        const { rows: teams } = await this.getJoinedTeamsByUserId.execute({
             userId,
             spaceId
         });

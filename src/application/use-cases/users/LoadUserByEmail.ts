@@ -7,7 +7,7 @@ export class LoadUserByEmail implements ILoadUserByEmail {
         private readonly loadUserByEmailRepository: ILoadUserByEmailRepository
     ) { }
 
-    execute(email: ILoadUserByEmail.Request): Promise<User> {
-        return this.loadUserByEmailRepository.loadUserByEmail(email);
+    async execute(email: ILoadUserByEmail.Request): Promise<ILoadUserByEmail.Response> {
+        return await this.loadUserByEmailRepository.loadUserByEmail(email);
     }
 }

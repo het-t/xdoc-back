@@ -29,7 +29,7 @@ export class FindUserConroller extends BaseController {
             )
         }
         
-        const user = await this.loadUserByEmail.execute(email);
+        const [user] = await this.loadUserByEmail.execute(email);
 
         if(user) {
             return ok({

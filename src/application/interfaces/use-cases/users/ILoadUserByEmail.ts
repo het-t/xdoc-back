@@ -3,7 +3,7 @@ import { User } from "@domain/interfaces/User";
 
 export namespace ILoadUserByEmail {
     export type Request = string;
-    export type Response = User;
+    export type Response = Array<User & { password: string }>;
 }
 
 export interface ILoadUserByEmail extends UseCase<

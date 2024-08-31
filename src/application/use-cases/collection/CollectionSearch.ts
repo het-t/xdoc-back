@@ -6,7 +6,18 @@ export class CollectionSearch implements ICollectionSearch {
         private readonly collectionSearchRepository: ICollectionSearchRepository
     ) {}
 
-    async execute({ collectionId, filters, ignoresHighlight, limit, query, recentPagesForBoosting, sort, source, spaceId, type }: ICollectionSearch.Request): Promise<ICollectionSearch.Response> {
+    async execute({ 
+        collectionId, 
+        filters, 
+        ignoresHighlight, 
+        limit, 
+        query, 
+        recentPagesForBoosting, 
+        sort, 
+        source, 
+        spaceId, 
+        type 
+    }: ICollectionSearch.Request): Promise<ICollectionSearch.Response> {
         if (type === "BlocksInCollection") {
             const results =  await this.collectionSearchRepository.searchBlockInCollection({
                 collectionId,

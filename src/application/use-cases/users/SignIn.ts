@@ -9,7 +9,6 @@ import { ICreateTokenRepository } from "@application/interfaces/repositories/tok
 export class SignIn implements ISignInInterface {
     constructor(
         public readonly loadUserByEmailRepository: ILoadUserByEmailRepository,
-        public readonly createTokenRepository: ICreateTokenRepository,
         public readonly jwtGenerator: JWTGenerator,
         public readonly hashCompare: HashCompare,
     ) {}
@@ -36,8 +35,6 @@ export class SignIn implements ISignInInterface {
 
         const authenticationToken = await this.jwtGenerator.generateAccessToken(user.id);
         const refreshToken = await this.jwtGenerator.generateRefreshToken(user.id);
-
-        await this.createTokenRepository.createToken(refreshToken);
 
         if(!authenticationToken) throw new Error("Unable to generate tokens");
         

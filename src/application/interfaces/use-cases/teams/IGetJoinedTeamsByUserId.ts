@@ -1,12 +1,13 @@
 import { Team } from "@domain/interfaces/Team";
 import { UseCase } from "../UseCase";
+import { IDbResponse } from "@application/interfaces/db/IDbResponse";
 
 export namespace IGetJoinedTeamsByUserId {
   export type Request = {
     userId: string;
     spaceId: string;
   };
-  export type Response = Promise<Team[]>;
+  export type Response = IDbResponse<Team[]>;
 }
 
 export interface IGetJoinedTeamsByUserId

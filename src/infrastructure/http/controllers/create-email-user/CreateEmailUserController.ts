@@ -31,7 +31,7 @@ export class CreateEmailUserController extends BaseController {
             )
         }
 
-        const existingUser = await this.loadUserByEmail.execute(email);
+        const [existingUser] = await this.loadUserByEmail.execute(email);
 
         if (existingUser) {
             return forbidden(

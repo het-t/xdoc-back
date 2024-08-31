@@ -1,6 +1,6 @@
 import env from "@config/env";
 import express, { Express, Router } from "express";
-import path = require("path");
+import path from "path";
 import { onBoadingRoutes } from "@main/routes/onboarding-routes";
 import { workspaceRoutes } from "@main/routes/workspace-routes";
 import { saveTransactionsRoutes } from "@main/routes/save-transaction-routes";
