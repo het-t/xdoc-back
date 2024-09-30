@@ -36,6 +36,7 @@ export class SaveTransactionsController extends BaseController {
                 }
             }
         } catch (error: any) {
+            console.log(error);
             if (
                 error instanceof InvalidOperationCommand
                 || error instanceof InvalidOperationPointer
@@ -43,7 +44,6 @@ export class SaveTransactionsController extends BaseController {
                 return badRequest(error);
             }
             else {
-                console.log(error);
                 return badRequest(new Error("unknown error encountered"))
             }
         }

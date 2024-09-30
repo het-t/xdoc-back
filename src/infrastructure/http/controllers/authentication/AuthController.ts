@@ -2,7 +2,7 @@ import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IAuthenticateInterface } from "@application/interfaces/use-cases/users/IAuthenticateInterface";
 import { BaseController } from "../BaseController";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
-import { forbidden, ok } from "@infrastructure/http/helpers/http";
+import { forbidden, ok, unauthorized } from "@infrastructure/http/helpers/http";
 
 export namespace AuthController {
     export type Request = IHttpRequest;
@@ -20,12 +20,13 @@ export class AuthController extends BaseController {
         httpRequest: AuthController.Request
     ): Promise<AuthController.Response> {
         try {
-            const token = httpRequest.headers?.cookie?.split("=")?.[1];        
+            const token = httpRequest.headers?.token_v1;        
             const decodedToken = await this.authenticate.execute(token);
+
             return ok(decodedToken);
         }
         catch(error) {
-            return forbidden(new Error("Invalid token"));
+            return unauthorized(new Error("Invalid token"));
         }
     }
 }

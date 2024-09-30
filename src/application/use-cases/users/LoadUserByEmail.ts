@@ -1,6 +1,5 @@
 import { ILoadUserByEmailRepository } from "@application/interfaces/repositories/users/ILoadUserByEmailRepository";
 import { ILoadUserByEmail } from "@application/interfaces/use-cases/users/ILoadUserByEmail";
-import { User } from "@domain/interfaces/User";
 
 export class LoadUserByEmail implements ILoadUserByEmail {
     constructor(

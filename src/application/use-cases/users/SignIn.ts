@@ -4,13 +4,12 @@ import { JWTGenerator } from "@application/interfaces/cyptography/JWTGenerator";
 import { ILoadUserByEmailRepository } from "@application/interfaces/repositories/users/ILoadUserByEmailRepository";
 import { InvalidUserError } from "@application/errors/InvalidUserError";
 import { InvalidPasswordError } from "@application/errors/InvalidPasswordError";
-import { ICreateTokenRepository } from "@application/interfaces/repositories/tokens/ICreateTokenRepository";
 
 export class SignIn implements ISignInInterface {
     constructor(
         public readonly loadUserByEmailRepository: ILoadUserByEmailRepository,
         public readonly jwtGenerator: JWTGenerator,
-        public readonly hashCompare: HashCompare,
+        public readonly hashCompare: HashCompare
     ) {}
 
     async execute(
@@ -23,7 +22,7 @@ export class SignIn implements ISignInInterface {
         if (!user) {
             return new InvalidUserError();
         }
-
+        
         const isPasswordValid = await this.hashCompare.compare(
             password,
             user.password

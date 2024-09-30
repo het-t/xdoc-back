@@ -11,9 +11,7 @@ try {
         knexPool.raw("select now()")
         .then((res) => console.log(res.rows[0].now))
         .catch(err => console.log(err))
-        .finally(() => knexPool.destroy());
-    })
-
+    });
 }
 catch (err) {
     console.log("server.ts", err)
