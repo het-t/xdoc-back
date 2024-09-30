@@ -4,7 +4,7 @@ import { BaseController } from "../BaseController";
 import { LoadUserByEmail } from "@application/use-cases/users/LoadUserByEmail";
 import { EmailAlredyInUseError } from "@application/errors/EmailAlreadyInUseError";
 import { badRequest, forbidden, ok } from "@infrastructure/http/helpers/http";
-import { CreateUser } from "@application/use-cases/users/CreateUser";
+import { CreateEmailUser } from "@application/use-cases/users/CreateEmailUser";
 import { randomBytes, randomUUID } from "crypto";
 
 export namespace CreateEmailUserController {
@@ -15,7 +15,7 @@ export namespace CreateEmailUserController {
 export class CreateEmailUserController extends BaseController {
     constructor(
         private readonly loadUserByEmail: LoadUserByEmail,
-        private readonly createUser: CreateUser
+        private readonly createEmailUser: CreateEmailUser
     ) {
         super();
     }
@@ -44,10 +44,9 @@ export class CreateEmailUserController extends BaseController {
 
         console.log(id, password);
 
-        await this.createUser.execute({
+        await this.createEmailUser.execute({
             id,
-            email,
-            password
+            email
         });
 
 

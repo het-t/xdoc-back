@@ -1,10 +1,13 @@
 import { expressRouteAdapter } from "@main/adapters/express-route-adapter";
-import { makeCreateEmailUser } from "@main/factories/controllers/create-email-user/controller-factory";
+import { expressRouteMiddlewareAdapter } from "@main/adapters/express-route-middleware-adapter";
+import { makeCreateEmailUserController } from "@main/factories/controllers/create-email-user/controller-factory";
+import { makeAuthenticateController } from "@main/factories/controllers/users/authenticate/controller-factory";
 import { Router } from "express";
 
-export const createEmailuserRoutes = (router: Router): void => {
+export const createEmailUserRoutes = (router: Router): void => {
     router.post(
         "/createEmailUser",
-        expressRouteAdapter(makeCreateEmailUser())
+        expressRouteMiddlewareAdapter(makeAuthenticateController()),
+        expressRouteAdapter(makeCreateEmailUserController())
     )
 }
