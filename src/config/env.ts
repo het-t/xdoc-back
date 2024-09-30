@@ -6,7 +6,9 @@ export default {
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || "refreshtokensecret",
     bcryptSalt: 10,
     nodeEnv: process.env.NODE_MODE || 'development',
-    pgDatabase: process.env.PG_DATABASE,
+    pgDatabase: process.env.NODE_MODE === 'development' 
+        ? process.env.PG_TEST_DATABASE
+        : process.env.PG_DATABASE,
     pgUser: process.env.PG_USER,
     pgPassword: process.env.PG_PASSWORD,
     pgHost: process.env.PG_HOST,
