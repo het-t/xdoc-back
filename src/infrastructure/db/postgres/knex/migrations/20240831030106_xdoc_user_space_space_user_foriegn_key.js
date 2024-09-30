@@ -5,9 +5,13 @@
 exports.up = async function(knex) {
     try {
         await knex.schema.alterTable("space", (table) => {
-          table.foreign("id")
-              .references("id")
-              .inTable("xdoc_user");
+            table.foreign("created_by_id")
+                .references("id")
+                .inTable("xdoc_user");
+
+            table.foreign("last_edited_by_id")
+                .references("id")
+                .inTable("xdoc_user");
         });
 
         await knex.schema.alterTable("space_user", (table) => {

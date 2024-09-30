@@ -4,7 +4,6 @@
  */
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
-  await knex('xdoc_user').truncate()
   await knex('xdoc_user').insert([
     {
       id: "d5a93cea-695e-4b76-a12f-d552cfbc606f", 
