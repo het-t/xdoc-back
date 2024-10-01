@@ -1,15 +1,36 @@
+import { knexPool } from "@infrastructure/db/postgres/knex/knex";
+import { clearTables } from "../clearTables";
 import { generateTestToken } from "../generateTestToken";
 import { _req } from "../index";
+import { runSeeds } from "../runSeeds";
 
 describe("Integration test: Workspace add member (/saveTransactions)", () => {
+    beforeEach(async () => {
+        await clearTables();
+        await runSeeds();
+    });
+    
+    afterEach(async () => {
+        await clearTables();
+    });
+
     it("inviting existing user", async () => {
-        const status = await makeRequest({});
+        const { status } = await makeRequest({});
+
+        const [{count}] = await knexPool("invite")
+        .where({
+            invitee_id: "d5a93cea-695e-4b76-a12f-d552cfbc606f",
+            inviter_id: "c09448fd-6974-4aa5-8d96-9769434287f7",
+            space_id: "9503ac1a-4db1-4183-93f1-665f4515fa64"
+        })
+        .count();
 
         expect(status).toBe(200);
+        expect(count).toBe("1");
     });
 
     it("inviting new user", async () => {
-        const status = await makeRequest({inviteeId: "c65b210c-7fdf-4006-ad58-88a5b48e37eb"});
+        const { status } = await makeRequest({inviteeId: "c65b210c-7fdf-4006-ad58-88a5b48e37eb"});
 
         expect(status).toBe(400);
     });
@@ -18,7 +39,7 @@ describe("Integration test: Workspace add member (/saveTransactions)", () => {
 async function makeRequest({
     inviterId = "c09448fd-6974-4aa5-8d96-9769434287f7", 
     inviteeId = "d5a93cea-695e-4b76-a12f-d552cfbc606f"
-}): Promise<number> {
+}){
     const payload = {
         "requestId": "5c622366-e860-4b10-800a-b6dc1343e6c2",
         "transactions": [
@@ -82,9 +103,7 @@ async function makeRequest({
         ]
     };
 
-    return (
-        await _req.post("/api/v1/saveTransactions")
+    return _req.post("/api/v1/saveTransactions")
         .set("token_v1", generateTestToken())
-        .send(payload)
-    ).status;
+        .send(payload);
 }
