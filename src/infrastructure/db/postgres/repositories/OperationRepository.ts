@@ -89,13 +89,22 @@ export class OperationRepository implements
         .where(filter);
 
         if(o.path.length === 0) {
-            query = knexPool(o.pointer.table)
-            .insert({
-                id: filter.id,
-                ...o.args
-            })
-            .onConflict("id")
-            .merge();
+            const [{ count }] = await knexPool(o.pointer.table)
+            .count("id")
+            .where(filter);
+
+            if(count === "0") {
+                query = knexPool(o.pointer.table)
+                    .insert({
+                        id: filter.id,
+                        ...o.args
+                    });
+            } else {
+                query = knexPool(o.pointer.table)
+                    .update({
+                        ...o.args
+                    });
+            }
         }
         else if (o.path.length === 1) {
             Object.keys(o.args).forEach(key => {
@@ -119,6 +128,7 @@ export class OperationRepository implements
                 )
             });
         }
+
         return await query;
     }
 
