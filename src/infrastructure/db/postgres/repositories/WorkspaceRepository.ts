@@ -20,9 +20,18 @@ export class WorkspaceRepository implements
     }
 
     async createWorkspace(
-        workspaceData: ICreateWorkspaceRepository.Request
+        { name, id, createdById }: ICreateWorkspaceRepository.Request
     ): Promise<ICreateWorkspaceRepository.Response> {
-        return "null";
+        return (
+            await knexPool("space")
+            .insert({
+                id,
+                name,
+                created_by_id: createdById,
+                last_edited_by_id: createdById
+            })
+            .returning("id")
+        )[0].id;
     }
 
     async getSpaces({ userId }: IGetSpacesRepository.Request): Promise<object> {

@@ -2,29 +2,36 @@ import { IHttpRequest } from "@infrastructure/http/interfaces/IHttpRequest";
 import { IHttpResponse } from "@infrastructure/http/interfaces/IHttpResponse";
 import { BaseController } from "../BaseController";
 import { ICreateWorkspaceInterface } from "@application/interfaces/use-cases/spaces/ICreateWorkspaceInterface";
-import { created, ok } from "@infrastructure/http/helpers/http";
+import { ok } from "@infrastructure/http/helpers/http";
 
 export namespace CreateWorkspaceController {
     export type Request = IHttpRequest;
-    export type Response = IHttpResponse<string>;
+    export type Response = IHttpResponse<Record<string, any>>;
 }
 
 export class CreateWorkspaceController extends BaseController {
-    constructor(private readonly createWorkspace: ICreateWorkspaceInterface) {
+    constructor(
+        private readonly createWorkspace: ICreateWorkspaceInterface,
+        private readonly addMemberInWorkspace: I
+    ) {
         super();
     }
 
-    async execute(httpRequest: CreateWorkspaceController.Request): Promise<CreateWorkspaceController.Response> {
+    async execute(
+        httpRequest: CreateWorkspaceController.Request,
+        { locals }: Record<string, any>
+    ): Promise<CreateWorkspaceController.Response> {
         const { name } = httpRequest.body;
 
         const workspaceIdOrError = await this.createWorkspace.execute({
-            name
+            name,
+            createdById: locals.userId
         });
 
         if(workspaceIdOrError instanceof Error) throw workspaceIdOrError;
 
-        return created({
-            workspaceId: workspaceIdOrError
-        })
+        return ok({ 
+            spaceId: workspaceIdOrError
+        });
     }
 }
