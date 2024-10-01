@@ -11,8 +11,7 @@ export namespace CreateWorkspaceController {
 
 export class CreateWorkspaceController extends BaseController {
     constructor(
-        private readonly createWorkspace: ICreateWorkspaceInterface,
-        private readonly addMemberInWorkspace: I
+        private readonly createWorkspace: ICreateWorkspaceInterface
     ) {
         super();
     }
