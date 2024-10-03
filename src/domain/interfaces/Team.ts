@@ -22,5 +22,5 @@ export type Team = {
     settings: TeamSetting;
     is_default: boolean;
     permissions: TeamPermission[];
-    memberships: TeamMembership[];
+    membership: TeamMembership[];
 }

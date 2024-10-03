@@ -12,7 +12,7 @@ export namespace ICreateTeamRepository {
         description: string,
         settings: TeamSetting,
         permissions: TeamPermission[],
-        memberships: TeamMembership[],
+        membership: TeamMembership[],
         isDefault: boolean;
     };
     export type Response = UUID;
@@ -20,6 +20,6 @@ export namespace ICreateTeamRepository {
 
 export interface ICreateTeamRepository {
     createTeam(
-        { id, createdById, spaceId, name, description, settings, permissions, memberships, isDefault }: ICreateTeamRepository.Request
+        { id, createdById, spaceId, name, description, settings, permissions, membership, isDefault }: ICreateTeamRepository.Request
     ): Promise<ICreateTeamRepository.Response>;
 }

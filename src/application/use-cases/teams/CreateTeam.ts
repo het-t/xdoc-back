@@ -33,7 +33,7 @@ export class CreateTeam implements ICreateTeam {
             space_permission: "editor"
         };
 
-        const memberships: TeamMembership[] = [{
+        const membership: TeamMembership[] = [{
             type: "owner",
             user_id: createdById,
             entity_type: "user"
@@ -70,7 +70,7 @@ export class CreateTeam implements ICreateTeam {
             description,
             settings,
             permissions: permissionsMapped,
-            memberships,
+            membership,
             isDefault
         });
 

@@ -29,7 +29,7 @@ exports.up = function(knex) {
         table.specificType("parent_table", "xdoc_table")
         .defaultTo("space");
 
-        table.jsonb("memberships")
+        table.jsonb("membership")
         .defaultTo([]);
 
         table.jsonb("permissions")

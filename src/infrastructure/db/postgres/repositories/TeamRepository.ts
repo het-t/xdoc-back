@@ -26,8 +26,8 @@ export class TeamRepository implements
             space_id: spaceId
         })
         .update({
-            "memberships": knexPool.raw(
-                `"memberships" || ?::jsonb`,
+            "membership": knexPool.raw(
+                `"membership" || ?::jsonb`,
                 newMembersOrGuestsToAdd
             )
         });
@@ -40,15 +40,15 @@ export class TeamRepository implements
             space_id: spaceId
         })
         .update({
-            "memberships": knexPool.raw(`(
+            "membership": knexPool.raw(`(
                 select jsonb_agg(ele)
-                from jsonb_array_elements("memberships") as ele
+                from jsonb_array_elements("membership") as ele
                 where not ele <@ ?::jsonb
             )`, existingMembersOrGuestsToRemove)
         })
     }
 
-    async createTeam({ id, createdById, spaceId, isDefault, name, description, settings, permissions, memberships }: ICreateTeamRepository.Request): Promise<ICreateTeamRepository.Response> {
+    async createTeam({ id, createdById, spaceId, isDefault, name, description, settings, permissions, membership }: ICreateTeamRepository.Request): Promise<ICreateTeamRepository.Response> {
         return await knexPool.raw("call team_create(?, ?, ?, ?, ?, ?::jsonb, ?::jsonb, ?::jsonb, ?)",[
             id,
             createdById,
@@ -56,7 +56,7 @@ export class TeamRepository implements
             name,
             description,
             JSON.stringify(permissions),
-            JSON.stringify(memberships),
+            JSON.stringify(membership),
             settings,
             isDefault
         ])

@@ -24,7 +24,8 @@ export class UpdateTeamMembersController extends BaseController {
             teamId,
             existingMembersOrGuestsToRemove,
             newMembersOrGuestsToAdd,
-            isSettingDefaultTeam
+            isSettingDefaultTeam,
+            addNewMembersToSpace
         } = httpRequest.body;
 
         await this.updateTeamMembers.execute({
@@ -32,7 +33,8 @@ export class UpdateTeamMembersController extends BaseController {
             teamId,
             existingMembersOrGuestsToRemove,
             newMembersOrGuestsToAdd,
-            isSettingDefaultTeam
+            isSettingDefaultTeam,
+            addNewMembersToSpace
         });
 
         return ok({});
