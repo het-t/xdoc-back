@@ -5,6 +5,7 @@ import { TeamMembership } from "@domain/interfaces/TeamMembership";
 import { TeamPermission } from "@domain/interfaces/TeamPermission";
 import { TeamPermissionType } from "@domain/interfaces/TeamPermissionType";
 import { TeamSetting } from "@domain/interfaces/TeamSetting";
+import { randomUUID } from "crypto";
 
 export class CreateTeam implements ICreateTeam {
     constructor(
@@ -12,8 +13,11 @@ export class CreateTeam implements ICreateTeam {
     ) {}
 
     async execute(
-        { spaceId, userId, name, description, isDefault, accessLevel, id }: ICreateTeam.Request
+        { spaceId, createdById, name, description, isDefault, accessLevel }: ICreateTeam.Request
     ): Promise<ICreateTeam.Response> {
+        const id = randomUUID();
+
+        //Open workspace settings
         const settings: TeamSetting = {
             visibility: "space_members",
             invite_access: "team_members",
@@ -31,7 +35,7 @@ export class CreateTeam implements ICreateTeam {
 
         const memberships: TeamMembership[] = [{
             type: "owner",
-            user_id: userId,
+            user_id: createdById,
             entity_type: "user"
         }];
 
@@ -58,9 +62,9 @@ export class CreateTeam implements ICreateTeam {
             permissionsMapped.push(p);
         }
         
-        return await this.createTeamRepository.createTeam({
+        await this.createTeamRepository.createTeam({
             id,
-            userId,
+            createdById,
             spaceId,
             name,
             description,
@@ -69,9 +73,7 @@ export class CreateTeam implements ICreateTeam {
             memberships,
             isDefault
         });
+
+        return Promise.resolve(id);
     }
-}
-
-interface IPermission {
-
 }

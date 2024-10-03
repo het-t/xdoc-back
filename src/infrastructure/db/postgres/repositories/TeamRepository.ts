@@ -48,10 +48,10 @@ export class TeamRepository implements
         })
     }
 
-    async createTeam({ id, userId, spaceId, isDefault, name, description, settings, permissions, memberships }: ICreateTeamRepository.Request): Promise<ICreateTeamRepository.Response> {
-        return knexPool.raw("call team_create(?, ?, ?, ?, ?, ?::jsonb, ?::jsonb, ?::jsonb, ?)",[
+    async createTeam({ id, createdById, spaceId, isDefault, name, description, settings, permissions, memberships }: ICreateTeamRepository.Request): Promise<ICreateTeamRepository.Response> {
+        return await knexPool.raw("call team_create(?, ?, ?, ?, ?, ?::jsonb, ?::jsonb, ?::jsonb, ?)",[
             id,
-            userId,
+            createdById,
             spaceId,
             name,
             description,

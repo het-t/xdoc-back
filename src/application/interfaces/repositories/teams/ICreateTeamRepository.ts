@@ -6,7 +6,7 @@ import { UUID } from "crypto";
 export namespace ICreateTeamRepository {
     export type Request = { 
         id: UUID,
-        userId: UUID,
+        createdById: UUID,
         spaceId: UUID,
         name: string,
         description: string,
@@ -15,11 +15,11 @@ export namespace ICreateTeamRepository {
         memberships: TeamMembership[],
         isDefault: boolean;
     };
-    export type Response = Promise<void>;
+    export type Response = UUID;
 }
 
 export interface ICreateTeamRepository {
     createTeam(
-        team: ICreateTeamRepository.Request
+        { id, createdById, spaceId, name, description, settings, permissions, memberships, isDefault }: ICreateTeamRepository.Request
     ): Promise<ICreateTeamRepository.Response>;
 }

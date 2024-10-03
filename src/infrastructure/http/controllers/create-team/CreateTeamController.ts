@@ -18,7 +18,8 @@ export class CreateTeamController extends BaseController {
     }
 
     async execute(
-        httpRequest: IHttpRequest
+        httpRequest: IHttpRequest,
+        { locals }: Record<string, any>
     ): Promise<IHttpResponse> {
         const {
             isDefault,
@@ -28,13 +29,10 @@ export class CreateTeamController extends BaseController {
             spaceId
         } = httpRequest.body;
 
-        const userId = "ca5f99c6-879b-4562-bd41-6651fc8d2099";
-        const teamId = randomUUID();
 
-        await this.createTeam.execute({
-            id: teamId,
+        const teamId = await this.createTeam.execute({
             spaceId,
-            userId,
+            createdById: locals.userId,
             name,
             description,
             isDefault,

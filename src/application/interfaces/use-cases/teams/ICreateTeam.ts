@@ -2,8 +2,7 @@ import { UUID } from "crypto";
 
 export namespace ICreateTeam {
     export type Request = {
-        id: UUID,
-        userId: UUID,
+        createdById: UUID,
         spaceId: UUID,
         name: string,
         description: string,
@@ -13,11 +12,11 @@ export namespace ICreateTeam {
         | "default" 
         | "private"
     };
-    export type Response = Promise<void>;
+    export type Response = UUID;
 }
 
 export interface ICreateTeam {
     execute(
-        teamData: ICreateTeam.Request
+        { createdById, spaceId, name, description, isDefault, accessLevel } : ICreateTeam.Request
     ): Promise<ICreateTeam.Response>
 }
